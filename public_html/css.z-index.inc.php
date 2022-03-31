@@ -1,8 +1,8 @@
 <?php
 
 class CSSZIndex extends CSSPropertyHandler {
-  function CSSZIndex() { 
-    $this->CSSPropertyHandler(false, false); 
+  function __construct() {
+    parent::__construct(false, false);
   }
 
   function default_value() { return 0; }

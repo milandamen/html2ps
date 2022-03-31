@@ -12,11 +12,11 @@ class CSSBackgroundAttachment extends CSSSubFieldProperty {
     return 'background-attachment';
   }
 
-  function default_value() {
+  static function default_value() {
     return BACKGROUND_ATTACHMENT_SCROLL;
   }
 
-  function &parse($value_string) {
+  static function parse($value_string) {
     if ($value_string === 'inherit') {
       return CSS_PROPERTY_INHERIT;
     };

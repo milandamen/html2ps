@@ -6,8 +6,8 @@ require_once(HTML2PS_DIR.'value.height.php');
 class CSSHeight extends CSSPropertyHandler {
   var $_autoValue;
 
-  function CSSHeight() { 
-    $this->CSSPropertyHandler(true, false); 
+  function __construct() {
+    parent::__construct(true, false);
     $this->_autoValue = ValueHeight::fromString('auto');
   }
 
@@ -16,7 +16,7 @@ class CSSHeight extends CSSPropertyHandler {
    */
   function inherit($old_state, &$new_state) { 
     $parent_display = $old_state[CSS_DISPLAY];
-    $this->replace_array(($parent_display === 'table-row') ? $old_state[CSS_HEIGHT] : $this->default_value(),
+    $this->replace_array(($parent_display === 'table-row') ? $old_state[CSS_HEIGHT] : $this->default_value_m(),
                          $new_state);
   }
 
@@ -24,7 +24,7 @@ class CSSHeight extends CSSPropertyHandler {
     return $this->_autoValue->copy();
   }
 
-  function default_value() { 
+  function default_value_m() {
     return $this->_getAutoValue();
   }
 

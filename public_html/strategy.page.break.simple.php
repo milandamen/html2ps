@@ -1,7 +1,7 @@
 <?php
 
 class StrategyPageBreakSimple {
-  function StrategyPageBreakSimple() {
+  function __construct() {
   }
 
   function run(&$pipeline, &$media, &$box) {

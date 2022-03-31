@@ -19,8 +19,8 @@
  * @link http://www.w3.org/TR/html4/interact/forms.html#h-17.4 HTML 4.01 The INPUT element
  */
 class ButtonBox extends InlineControlBox {
-  function ButtonBox() {
-    $this->InlineControlBox();
+  function __construct() {
+    parent::__construct();
   }
 
   function get_max_width(&$context, $limit = 10E6) { 
@@ -35,7 +35,7 @@ class ButtonBox extends InlineControlBox {
    * 
    * @return ButtonBox new button element
    */
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     /**
      * Button text is defined by its 'value' attrubute;
      * if this attribute is not specified, we should provide some 
@@ -55,7 +55,7 @@ class ButtonBox extends InlineControlBox {
       $text = DEFAULT_BUTTON_TEXT;
     };
 
-    $box =& new ButtonBox();
+    $box = new ButtonBox();
     $box->readCSS($pipeline->get_current_css_state());
 
     /**

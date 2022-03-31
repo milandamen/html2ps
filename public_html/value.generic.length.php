@@ -16,7 +16,7 @@ class Value extends CSSValue {
   }
 
   function &copy() {
-    $value =& new Value;
+    $value = new Value;
     $value->_unit   = $this->_unit;
     $value->_number = $this->_number;
     $value->_points = $this->_points;
@@ -27,14 +27,14 @@ class Value extends CSSValue {
     return $this->_points;
   }
 
-  function Value() {
+  function __construct() {
     $this->_unit   = UNIT_PT;
     $this->_number = 0;
     $this->_points = 0;
   }
 
-  function &fromData($number, $unit) {
-    $value =& new Value;
+  static function fromData($number, $unit) {
+    $value = new Value;
     $value->_unit   = $unit;
     $value->_number = $number;
     $value->_points = 0;
@@ -45,8 +45,8 @@ class Value extends CSSValue {
    * Create  new  object using  data  contained  in  string CSS  value
    * representation
    */
-  function &fromString($string_value) {
-    $value =& new Value;
+  static function fromString($string_value) {
+    $value = new Value;
     $value->_unit   = $value->unit_from_string($string_value);
     $value->_number = (double)$string_value;
     $value->_points = 0;
@@ -56,7 +56,7 @@ class Value extends CSSValue {
   /**
    * @static
    */
-  function unit_from_string($value) {
+  static function unit_from_string($value) {
     $unit = substr($value, strlen($value)-2, 2);
     switch ($unit) {
     case 'pt':

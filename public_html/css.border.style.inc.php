@@ -6,8 +6,8 @@ require_once(HTML2PS_DIR.'value.border.style.class.php');
 class CSSBorderStyle extends CSSSubProperty {
   var $_defaultValue;
 
-  function CSSBorderStyle(&$owner) {
-    $this->CSSSubProperty($owner);
+  function __construct(&$owner) {
+    parent::__construct($owner);
 
     $this->_defaultValue = new BorderStyle(BS_NONE,
                                            BS_NONE,
@@ -44,11 +44,11 @@ class CSSBorderStyle extends CSSSubProperty {
     return 'border-style';
   }
 
-  function default_value() {
+  function default_value_m() {
     return $this->_defaultValue;
   }
 
-  function parse_style($value) {
+  static function parse_style($value) {
     switch ($value) {
     case "solid":  
       return BS_SOLID; 
@@ -94,7 +94,7 @@ class CSSBorderStyle extends CSSSubProperty {
       $v4 = $this->parse_style($values[3]);
       return array($v1, $v2, $v3, $v4);
     default:
-      return $this->default_value();
+      return $this->default_value_m();
     };   
   }
 

@@ -7,8 +7,8 @@ define('TA_CENTER',2);
 define('TA_JUSTIFY',3);
 
 class CSSTextAlign extends CSSPropertyStringSet {
-  function CSSTextAlign() { 
-    $this->CSSPropertyStringSet(true, 
+  function __construct() {
+    parent::__construct(true,
                                 true,
                                 array('inherit' => CSS_PROPERTY_INHERIT,
                                       'left'    => TA_LEFT,
@@ -20,7 +20,7 @@ class CSSTextAlign extends CSSPropertyStringSet {
   
   function default_value() { return TA_LEFT; }
 
-  function value2pdf($value) { 
+  static function value2pdf($value) {
     switch ($value) {
     case TA_LEFT:
       return "ta_left";

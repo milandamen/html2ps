@@ -6,8 +6,8 @@ require_once(HTML2PS_DIR.'value.border.color.class.php');
 class CSSBorderColor extends CSSSubProperty {
   var $_defaultValue;
 
-  function CSSBorderColor(&$owner) {
-    $this->CSSSubProperty($owner);
+  function __construct(&$owner) {
+    parent::__construct($owner);
 
     $this->_defaultValue = new BorderColor(new Color(array(0,0,0), true),
                                            new Color(array(0,0,0), true),
@@ -44,7 +44,7 @@ class CSSBorderColor extends CSSSubProperty {
     return 'border-color';
   }
 
-  function default_value() {
+  function default_value_m() {
     return $this->_defaultValue;
   }
   
@@ -71,7 +71,7 @@ class CSSBorderColor extends CSSSubProperty {
       $v4 = parse_color_declaration($values[3]);
       return array($v1, $v2, $v3, $v4);
     default:
-      return $this->default_value();
+      return $this->default_value_m();
     };   
   }
 

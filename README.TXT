@@ -1,3 +1,9 @@
+This is a fork of html2ps that adds compatibility with newer PHP versions like PHP 7.
+This code is based on the original html2ps code by Darren at www.TUFaT.com.
+
+
+Original README:
+
 Welcome to HTML2PS/PDF!
 
 This system is a PHP equivalent to the Perl software by the same name. This software takes it a step further, however, and provides the ability to render the output as a PDF file.

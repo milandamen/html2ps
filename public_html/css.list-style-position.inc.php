@@ -6,9 +6,9 @@ define('LSP_INSIDE',1);
 
 class CSSListStylePosition extends CSSSubFieldProperty {
   // CSS 2.1: default value for list-style-position is 'outside'
-  function default_value() { return LSP_OUTSIDE; }
+  static function default_value() { return LSP_OUTSIDE; }
 
-  function parse($value) {
+  static function parse($value) {
     if (preg_match('/\binside\b/',$value)) {
       return LSP_INSIDE; 
     };

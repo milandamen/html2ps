@@ -1,7 +1,7 @@
 <?php
 
 class AutofixUrl {
-  function AutofixUrl() {
+  function __construct() {
   }
 
   function apply($url) {

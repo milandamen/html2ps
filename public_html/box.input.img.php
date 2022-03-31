@@ -5,8 +5,8 @@ class ButtonBrokenImageBox extends BrokenImgBox {
   var $_field_value;
   var $_action_url;
 
-  function ButtonBrokenImageBox($width, $height, $alt, $field, $value, $action_url) {
-    $this->BrokenImgBox($width, $height, $alt);
+  function __construct($width, $height, $alt, $field, $value, $action_url) {
+    parent::__construct($width, $height, $alt);
 
     $this->_field_name  = $field;
     $this->_field_value = $value;
@@ -47,8 +47,8 @@ class ButtonImageBox extends ImgBox {
   var $_field_value;
   var $_action_url;
 
-  function ButtonImageBox($img, $field, $value, $action_url) {
-    $this->ImgBox($img);
+  function __construct($img, $field, $value, $action_url) {
+    parent::__construct($img);
 
     $this->_field_name  = $field;
     $this->_field_value = $value;
@@ -83,7 +83,7 @@ class ButtonImageBox extends ImgBox {
     return $status;
   }
 
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     $name  = $root->get_attribute('name');
     $value = $root->get_attribute('value');
 
@@ -92,7 +92,7 @@ class ButtonImageBox extends ImgBox {
 
     $src_img = ImageFactory::get($pipeline->guess_url($src), $pipeline);
     if (is_null($src_img)) {
-      error_log(sprintf("Cannot open image at '%s'", $src));
+      log_error(sprintf("Cannot open image at '%s'", $src));
 
       if ($root->has_attribute('width')) {
         $width = px2pt($root->get_attribute('width'));
@@ -108,15 +108,15 @@ class ButtonImageBox extends ImgBox {
 
       $alt = $root->get_attribute('alt');
       
-      $css_state =& $pipeline->get_current_css_state();
-      $box =& new ButtonBrokenImagebox($width, $height, $alt, $name, $value, 
+      $css_state = $pipeline->get_current_css_state();
+      $box = new ButtonBrokenImagebox($width, $height, $alt, $name, $value,
                                        $css_state->get_property(CSS_HTML2PS_FORM_ACTION));
       $box->readCSS($css_state);
       return $box;
     };
 
-    $css_state =& $pipeline->get_current_css_state();
-    $box =& new ButtonImageBox($src_img, $name, $value, 
+    $css_state = $pipeline->get_current_css_state();
+    $box = new ButtonImageBox($src_img, $name, $value,
                                $css_state->get_property(CSS_HTML2PS_FORM_ACTION));
     $box->readCSS($css_state);
     $box->_setupSize();

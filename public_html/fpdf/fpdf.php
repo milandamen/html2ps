@@ -93,9 +93,9 @@ if (!class_exists('FPDF')) {
       return true;
     }
 
-    function PDFIndirectObject(&$handler,
-                               $object_id, 
-                               $generation_id) {
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id) {
       $this->object_id = $object_id;
       $this->generation_id = $generation_id;
     }
@@ -104,7 +104,7 @@ if (!class_exists('FPDF')) {
       return $handler->_dictionary($this->_dict($handler));
     }
 
-    function _dict() {
+    function _dict(&$handler) {
       return array();
     }
   }
@@ -112,16 +112,16 @@ if (!class_exists('FPDF')) {
   class PDFPage extends PDFIndirectObject {
     var $annotations;
 
-    function PDFPage(&$handler, 
-                     $object_id, 
-                     $generation_id) {
-      $this->PDFIndirectObject($handler, 
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id) {
+      parent::__construct($handler,
                                $object_id, 
                                $generation_id);
     }
 
     function add_annotation(&$annotation) {
-      $this->annotations[] =& $annotation;
+      $this->annotations[] = $annotation;
     }
 
     function _annotations(&$handler) {
@@ -132,11 +132,11 @@ if (!class_exists('FPDF')) {
   class PDFAppearanceStream extends PDFIndirectObject {
     var $_content;
 
-    function PDFAppearanceStream(&$handler, 
-                                 $object_id, 
-                                 $generation_id,
-                                 $content) {
-      $this->PDFIndirectObject($handler, 
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $content) {
+      parent::__construct($handler,
                                $object_id, 
                                $generation_id);
 
@@ -163,10 +163,10 @@ if (!class_exists('FPDF')) {
   }
 
   class PDFAnnotation extends PDFIndirectObject {
-    function PDFAnnotation(&$handler,
-                           $object_id, 
-                           $generation_id) {
-      $this->PDFIndirectObject($handler,
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id) {
+      parent::__construct($handler,
                                $object_id, 
                                $generation_id);
     }
@@ -183,7 +183,7 @@ if (!class_exists('FPDF')) {
     var $w;
     var $h;
 
-    function PDFRect($x,$y,$w,$h) {
+    function __construct($x, $y, $w, $h) {
       $this->x = $x;
       $this->y = $y;
       $this->w = $w;
@@ -219,12 +219,12 @@ if (!class_exists('FPDF')) {
     var $rect;
     var $link;
 
-    function PDFAnnotationExternalLink(&$handler,
-                                       $object_id, 
-                                       $generation_id,
-                                       $rect,
-                                       $link) {
-      $this->PDFAnnotation($handler, 
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect,
+                         $link) {
+      parent::__construct($handler,
                            $object_id,
                            $generation_id);
 
@@ -247,12 +247,12 @@ if (!class_exists('FPDF')) {
     var $rect;
     var $link;
 
-    function PDFAnnotationInternalLink(&$handler,
-                                       $object_id, 
-                                       $generation_id,
-                                       $rect,
-                                       $link) {
-      $this->PDFAnnotation($handler, 
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect,
+                         $link) {
+      parent::__construct($handler,
                            $object_id, 
                            $generation_id);
 
@@ -300,11 +300,11 @@ if (!class_exists('FPDF')) {
   class PDFAnnotationWidget extends PDFAnnotation {
     var $_rect;
 
-    function PDFAnnotationWidget(&$handler,
-                                 $object_id, 
-                                 $generation_id,
-                                 $rect) {
-      $this->PDFAnnotation($handler, 
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect) {
+      parent::__construct($handler,
                            $object_id, 
                            $generation_id);
 
@@ -325,11 +325,11 @@ if (!class_exists('FPDF')) {
     var $_kids;
     var $_group_name;
 
-    function PDFFieldGroup(&$handler, 
-                           $object_id, 
-                           $generation_id,
-                           $group_name) {
-      $this->PDFIndirectObject($handler, 
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $group_name) {
+      parent::__construct($handler,
                                $object_id, 
                                $generation_id);
 
@@ -349,7 +349,7 @@ if (!class_exists('FPDF')) {
        * Check if field name is empty
        */
       if (trim($field->get_field_name()) == "") {
-        error_log(sprintf("Found form field with empty name"));
+        log_error(sprintf("Found form field with empty name"));
         return false;
       };
 
@@ -359,7 +359,7 @@ if (!class_exists('FPDF')) {
        */
       foreach ($this->_kids as $kid) {
         if ($kid->get_field_name() == $field->get_field_name()) {
-          error_log(sprintf("Interactive form '%s' already contains field named '%s'",
+          log_error(sprintf("Interactive form '%s' already contains field named '%s'",
                             $this->_group_name,
                             $kid->get_field_name()));
           return false;
@@ -379,7 +379,7 @@ if (!class_exists('FPDF')) {
                                        $field->get_object_id()));
       };
 
-      $this->_kids[] =& $field;
+      $this->_kids[] = $field;
       $field->set_parent($this);
     }
 
@@ -416,12 +416,12 @@ if (!class_exists('FPDF')) {
      */
     var $_parent;
 
-    function PDFField(&$handler,
-                      $object_id, 
-                      $generation_id, 
-                      $rect, 
-                      $field_name) {
-      $this->PDFAnnotationWidget($handler, 
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect,
+                         $field_name) {
+      parent::__construct($handler,
                                  $object_id, 
                                  $generation_id, 
                                  $rect);
@@ -460,7 +460,7 @@ if (!class_exists('FPDF')) {
     }
 
     function set_parent(&$form) {
-      $this->_parent =& $form;
+      $this->_parent = $form;
     }
 
     function get_parent() {
@@ -477,14 +477,14 @@ if (!class_exists('FPDF')) {
     var $_appearance_off;
     var $_checked;
 
-    function PDFFieldCheckBox(&$handler,
-                              $object_id, 
-                              $generation_id,
-                              $rect, 
-                              $field_name, 
-                              $value,
-                              $checked) {
-      $this->PDFField($handler,
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect,
+                         $field_name,
+                         $value,
+                         $checked) {
+      parent::__construct($handler,
                       $object_id, 
                       $generation_id,
                       $rect, 
@@ -540,13 +540,13 @@ if (!class_exists('FPDF')) {
       $this->_appearance->out($handler);
     }
 
-    function PDFFieldPushButton(&$handler,
-                                $object_id, 
-                                $generation_id,
-                                $rect, 
-                                $fontindex, 
-                                $fontsize) {
-      $this->PDFField($handler,
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect,
+                         $fontindex,
+                         $fontsize) {
+      parent::__construct($handler,
                       $object_id, 
                       $generation_id,
                       $rect,
@@ -583,16 +583,16 @@ if (!class_exists('FPDF')) {
   class PDFFieldPushButtonImage extends PDFFieldPushButton {
     var $_link;
 
-    function PDFFieldPushButtonImage(&$handler,
-                                      $object_id, 
-                                      $generation_id,
-                                      $rect, 
-                                      $fontindex, 
-                                      $fontsize, 
-                                      $field_name,
-                                      $value, 
-                                      $link) {
-      $this->PDFFieldPushButton($handler,
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect,
+                         $fontindex,
+                         $fontsize,
+                         $field_name,
+                         $value,
+                         $link) {
+      parent::__construct($handler,
                                 $object_id, 
                                 $generation_id, 
                                 $rect, 
@@ -619,16 +619,16 @@ if (!class_exists('FPDF')) {
     var $_link;
     var $_caption;
 
-    function PDFFieldPushButtonSubmit(&$handler,
-                                      $object_id, 
-                                      $generation_id,
-                                      $rect, 
-                                      $fontindex, 
-                                      $fontsize, 
-                                      $field_name,
-                                      $value, 
-                                      $link) {
-      $this->PDFFieldPushButton($handler,
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect,
+                         $fontindex,
+                         $fontsize,
+                         $field_name,
+                         $value,
+                         $link) {
+      parent::__construct($handler,
                                 $object_id, 
                                 $generation_id, 
                                 $rect, 
@@ -654,13 +654,13 @@ if (!class_exists('FPDF')) {
   }
 
   class PDFFieldPushButtonReset extends PDFFieldPushButton {
-    function PDFFieldPushButtonReset(&$handler,
-                                     $object_id, 
-                                     $generation_id,
-                                     $rect, 
-                                     $fontindex, 
-                                     $fontsize) {
-      $this->PDFFieldPushButton($handler,
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect,
+                         $fontindex,
+                         $fontsize) {
+      parent::__construct($handler,
                                 $object_id, 
                                 $generation_id,
                                 $rect, 
@@ -696,12 +696,12 @@ if (!class_exists('FPDF')) {
     var $_appearance_on;
     var $_appearance_off;
 
-    function PDFFieldRadio(&$handler,
-                           $object_id, 
-                           $generation_id,
-                           $rect, 
-                           $value) {
-      $this->PDFAnnotationWidget($handler,
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect,
+                         $value) {
+      parent::__construct($handler,
                                  $object_id, 
                                  $generation_id,
                                  $rect);
@@ -744,7 +744,7 @@ if (!class_exists('FPDF')) {
      * @param PDFFieldRadioGroup $parent reference to a group object
      */
     function set_parent(&$parent) {
-      $this->_parent =& $parent;
+      $this->_parent = $parent;
     }
   }
 
@@ -774,11 +774,11 @@ if (!class_exists('FPDF')) {
       return true;
     }
     
-    function PDFFieldRadioGroup(&$handler,
-                                $object_id,
-                                $generation_id, 
-                                $group_name) {
-      $this->PDFFieldGroup($handler,
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $group_name) {
+      parent::__construct($handler,
                            $object_id, 
                            $generation_id,
                            $group_name);
@@ -798,7 +798,7 @@ if (!class_exists('FPDF')) {
     }
 
     function set_parent(&$parent) {
-      $this->_parent =& $parent;
+      $this->_parent = $parent;
     }
   }
 
@@ -825,14 +825,14 @@ if (!class_exists('FPDF')) {
                                'Opt'     => $options_str));
     }
 
-    function PDFFieldSelect(&$handler,
-                            $object_id, 
-                            $generation_id,
-                            $rect, 
-                            $field_name,
-                            $value,
-                            $options) {
-      $this->PDFField($handler,
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect,
+                         $field_name,
+                         $value,
+                         $options) {
+      parent::__construct($handler,
                       $object_id, 
                       $generation_id,
                       $rect, 
@@ -877,15 +877,15 @@ if (!class_exists('FPDF')) {
       //      $this->_appearance->out($handler);
     }
 
-    function PDFFieldText(&$handler,
-                          $object_id, 
-                          $generation_id,
-                          $rect, 
-                          $field_name,
-                          $value,
-                          $fontindex, 
-                          $fontsize) {
-      $this->PDFField($handler,
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect,
+                         $field_name,
+                         $value,
+                         $fontindex,
+                         $fontsize) {
+      parent::__construct($handler,
                       $object_id, 
                       $generation_id,
                       $rect, 
@@ -913,15 +913,15 @@ if (!class_exists('FPDF')) {
    * "Password" text input field
    */
   class PDFFieldPassword extends PDFFieldText {
-    function PDFFieldPassword(&$handler, 
-                              $object_id,
-                              $generation_id,
-                              $rect,
-                              $field_name,
-                              $value,
-                              $fontindex,
-                              $fontsize) {
-      $this->PDFFieldText($handler,
+    function __construct(&$handler,
+                         $object_id,
+                         $generation_id,
+                         $rect,
+                         $field_name,
+                         $value,
+                         $fontindex,
+                         $fontsize) {
+      parent::__construct($handler,
                           $object_id,
                           $generation_id,
                           $rect,
@@ -1044,8 +1044,8 @@ if (!class_exists('FPDF')) {
     //   assigned in any arbitrary order.
     // * A non-negative integer generation number. In a newly created file, all indirect
     //   objects have generation numbers of 0. Nonzero generation numbers may be introduced
-    //   when the file is later updated; see Sections 3.4.3, “Cross-Reference
-    //   Table,” and 3.4.5, “Incremental Updates.”
+    //   when the file is later updated; see Sections 3.4.3, Cross-Reference
+    //   Table, and 3.4.5, Incremental Updates.
     // Together, the combination of an object number and a generation number uniquely
     // identifies an indirect object. The object retains the same object number and
     // generation number throughout its existence, even if its value is modified.
@@ -1107,11 +1107,11 @@ if (!class_exists('FPDF')) {
                                 $this->_generate_new_object_number(),    // Object identifier
                                 0,
                                 $name);
-      $this->_forms[] =& $form;
+      $this->_forms[] = $form;
     }
 
     function add_field_select($x, $y, $w, $h, $name, $value, $options) {
-      $field =& new PDFFieldSelect($this,
+      $field = new PDFFieldSelect($this,
                                    $this->_generate_new_object_number(),    // Object identifier
                                    0,                                       // Generation
                                    new PDFRect($x, $y, $w, $h),             // Annotation rectangle
@@ -1119,7 +1119,7 @@ if (!class_exists('FPDF')) {
                                    $value,
                                    $options);
 
-      $current_form =& $this->current_form();
+      $current_form = $this->current_form();
       $current_form->add_field($field);
 
       $this->_pages[count($this->_pages)-1]->add_annotation($field); 
@@ -1138,14 +1138,14 @@ if (!class_exists('FPDF')) {
      * @TODO check if fully qualified field name will be unique in PDF file
      */
     function add_field_checkbox($x, $y, $w, $h, $name, $value, $checked) {
-      $field =& new PDFFieldCheckBox($this,
+      $field = new PDFFieldCheckBox($this,
                                      $this->_generate_new_object_number(),    // Object identifier
                                      0,                                       // Generation
                                      new PDFRect($x, $y, $w, $h),             // Annotation rectangle
                                      $name,                                   // Field name
                                      $value, $checked);                                 // Checkbox "on" value
 
-      $current_form =& $this->current_form();
+      $current_form = $this->current_form();
       $current_form->add_field($field);
 
       $this->_pages[count($this->_pages)-1]->add_annotation($field); 
@@ -1161,14 +1161,14 @@ if (!class_exists('FPDF')) {
         $id   = $this->_generate_new_object_number();
         $name = sprintf("AnonymousFormObject_%u", $id);
 
-        error_log(sprintf("Anonymous form generated with name %s; check your HTML for validity", 
+        log_error(sprintf("Anonymous form generated with name %s; check your HTML for validity",
                           $name));
 
         $form = new PDFFieldGroup($this,
                                   $id,    // Object identifier
                                   0,
                                   $name);
-        $this->_forms[] =& $form;
+        $this->_forms[] = $form;
       };
 
       return $this->_forms[count($this->_forms)-1];
@@ -1176,20 +1176,20 @@ if (!class_exists('FPDF')) {
 
     function add_field_radio($x, $y, $w, $h, $group_name, $value, $checked) {
       if (isset($this->_form_radios[$group_name])) {
-        $field =& $this->_form_radios[$group_name];
+        $field = $this->_form_radios[$group_name];
       } else {
-        $field =& new PDFFieldRadioGroup($this, 
+        $field = new PDFFieldRadioGroup($this,
                                          $this->_generate_new_object_number(),
                                          0,
                                          $group_name);
         
-        $current_form =& $this->current_form();
+        $current_form = $this->current_form();
         $current_form->add_field($field);
 
-        $this->_form_radios[$group_name] =& $field;
+        $this->_form_radios[$group_name] = $field;
       };
 
-      $radio =& new PDFFieldRadio($this, 
+      $radio = new PDFFieldRadio($this,
                                   $this->_generate_new_object_number(),
                                   0,
                                   new PDFRect($x, $y, $w, $h),
@@ -1213,7 +1213,7 @@ if (!class_exists('FPDF')) {
      * @return Field number
      */
     function add_field_text($x, $y, $w, $h, $value, $field_name) {
-      $field =& new PDFFieldText($this, 
+      $field = new PDFFieldText($this,
                                  $this->_generate_new_object_number(),
                                  0,
                                  new PDFRect($x, $y, $w, $h), 
@@ -1222,14 +1222,14 @@ if (!class_exists('FPDF')) {
                                  $this->CurrentFont['i'], 
                                  $this->FontSizePt);
 
-      $current_form =& $this->current_form();
+      $current_form = $this->current_form();
       $current_form->add_field($field);
 
       $this->_pages[count($this->_pages)-1]->add_annotation($field);    
     }
 
     function add_field_multiline_text($x, $y, $w, $h, $value, $field_name) {
-      $field =& new PDFFieldMultilineText($this, 
+      $field = new PDFFieldMultilineText($this,
                                           $this->_generate_new_object_number(),
                                           0,
                                           new PDFRect($x, $y, $w, $h), 
@@ -1238,7 +1238,7 @@ if (!class_exists('FPDF')) {
                                           $this->CurrentFont['i'], 
                                           $this->FontSizePt);
       
-      $current_form =& $this->current_form();
+      $current_form = $this->current_form();
       $current_form->add_field($field);
 
       $this->_pages[count($this->_pages)-1]->add_annotation($field);    
@@ -1257,7 +1257,7 @@ if (!class_exists('FPDF')) {
      * @return Field number
      */
     function add_field_password($x, $y, $w, $h, $value, $field_name) {
-      $field =& new PDFFieldPassword($this,
+      $field = new PDFFieldPassword($this,
                                      $this->_generate_new_object_number(),
                                      0,
                                      new PDFRect($x, $y, $w, $h),
@@ -1266,14 +1266,14 @@ if (!class_exists('FPDF')) {
                                      $this->CurrentFont['i'], 
                                      $this->FontSizePt);
 
-      $current_form =& $this->current_form();
+      $current_form = $this->current_form();
       $current_form->add_field($field);
 
       $this->_pages[count($this->_pages)-1]->add_annotation($field);
     }
 
     function add_field_pushbuttonimage($x, $y, $w, $h, $field_name, $value, $actionURL) {
-      $field =& new PDFFieldPushButtonImage($this,
+      $field = new PDFFieldPushButtonImage($this,
                                             $this->_generate_new_object_number(),
                                             0,
                                             new PDFRect($x, $y, $w, $h),
@@ -1283,14 +1283,14 @@ if (!class_exists('FPDF')) {
                                             $value,
                                             $actionURL);
       
-      $current_form =& $this->current_form();
+      $current_form = $this->current_form();
       $current_form->add_field($field);
 
       $this->_pages[count($this->_pages)-1]->add_annotation($field);    
     }
 
     function add_field_pushbuttonsubmit($x, $y, $w, $h, $field_name, $value, $actionURL) {
-      $field =& new PDFFieldPushButtonSubmit($this,
+      $field = new PDFFieldPushButtonSubmit($this,
                                              $this->_generate_new_object_number(),
                                              0,
                                              new PDFRect($x, $y, $w, $h),
@@ -1300,14 +1300,14 @@ if (!class_exists('FPDF')) {
                                              $value,
                                              $actionURL);
 
-      $current_form =& $this->current_form();
+      $current_form = $this->current_form();
       $current_form->add_field($field);
 
       $this->_pages[count($this->_pages)-1]->add_annotation($field);    
     }
 
     function add_field_pushbuttonreset($x, $y, $w, $h) {
-      $field =& new PDFFieldPushButtonReset($this,
+      $field = new PDFFieldPushButtonReset($this,
                                             $this->_generate_new_object_number(),
                                             0,
                                             new PDFRect($x, $y, $w, $h),
@@ -1315,14 +1315,14 @@ if (!class_exists('FPDF')) {
                                             $this->CurrentFont['i'], 
                                             $this->FontSizePt);
 
-      $current_form =& $this->current_form();
+      $current_form = $this->current_form();
       $current_form->add_field($field);
 
       $this->_pages[count($this->_pages)-1]->add_annotation($field);    
     }
 
     function add_field_pushbutton($x, $y, $w, $h) {
-      $field =& new PDFFieldPushButton($this,
+      $field = new PDFFieldPushButton($this,
                                        $this->_generate_new_object_number(),
                                        0,
                                        new PDFRect($x, $y, $w, $h),
@@ -1330,7 +1330,7 @@ if (!class_exists('FPDF')) {
                                        $this->CurrentFont['i'], 
                                        $this->FontSizePt);
 
-      $current_form =& $this->current_form();
+      $current_form = $this->current_form();
       $current_form->add_field($field);
 
       $this->_pages[count($this->_pages)-1]->add_annotation($field);    
@@ -1523,7 +1523,7 @@ if (!class_exists('FPDF')) {
      *                               Public methods                                 *
      *                                                                              *
      *******************************************************************************/
-    function FPDF($orientation='P',$unit='mm',$format='A4') {
+    function __construct($orientation='P', $unit='mm', $format='A4') {
       $this->_forms = array();
       $this->_form_radios = array();
       $this->_pages = array();
@@ -1768,7 +1768,7 @@ if (!class_exists('FPDF')) {
     }
 
     function AddPage($orientation='') {
-      $this->_pages[] =& new PDFPage($this, $this->_generate_new_object_number(), 0);
+      $this->_pages[] = new PDFPage($this, $this->_generate_new_object_number(), 0);
 
       //Start a new page
       if ($this->state==0) {
@@ -1905,7 +1905,7 @@ if (!class_exists('FPDF')) {
 
       $l=strlen($s);
       for($i=0; $i<$l; $i++) {
-        $w+=$cw[$s{$i}];
+        $w+=$cw[$s[$i]];
       };
 
       return $w*$this->FontSize/1000;
@@ -2217,7 +2217,7 @@ if (!class_exists('FPDF')) {
     function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
     {
       //Output text with automatic or explicit line breaks
-      $cw=&$this->CurrentFont['cw'];
+      $cw=$this->CurrentFont['cw'];
       if($w==0)
         $w=$this->w-$this->rMargin-$this->x;
       $wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
@@ -2253,7 +2253,7 @@ if (!class_exists('FPDF')) {
       while($i<$nb)
 	{
           //Get next character
-          $c=$s{$i};
+          $c=$s[$i];
           if($c=="\n")
             {
               //Explicit line break
@@ -2329,7 +2329,7 @@ if (!class_exists('FPDF')) {
 
     function Write($h, $txt, $link='') {
       //Output text in flowing mode
-      $cw=&$this->CurrentFont['cw'];
+      $cw=$this->CurrentFont['cw'];
       $w=$this->w-$this->rMargin-$this->x;
       $wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
       $s=str_replace("\r",'',$txt);
@@ -2341,7 +2341,7 @@ if (!class_exists('FPDF')) {
       $nl=1;
       while ($i<$nb) {
         //Get next character
-        $c=$s{$i};
+        $c=$s[$i];
         if ($c=="\n") {
           //Explicit line break
           $this->Cell($w,$h,substr($s,$j,$i-$j),0,2,'',0,$link);
@@ -2415,7 +2415,6 @@ if (!class_exists('FPDF')) {
             }
           $type=strtolower($type);
           $mqr=get_magic_quotes_runtime();
-          set_magic_quotes_runtime(0);
           if($type=='jpg' || $type=='jpeg')
             $info=$this->_parsejpg($file);
           elseif($type=='png')
@@ -2428,7 +2427,6 @@ if (!class_exists('FPDF')) {
                 $this->Error('Unsupported image type: '.$type);
               $info=$this->$mtd($file);
             }
-          set_magic_quotes_runtime($mqr);
           $info['i']=count($this->images)+1;
           $this->images[$file]=$info;
 	}
@@ -2679,7 +2677,6 @@ if (!class_exists('FPDF')) {
       }
 
       $mqr=get_magic_quotes_runtime();
-      set_magic_quotes_runtime(0);
       foreach ($this->FontFiles as $file=>$info) {
         //Font file embedding
         $this->_newobj();
@@ -2695,12 +2692,12 @@ if (!class_exists('FPDF')) {
         fclose($f);
         $compressed=(substr($file,-2)=='.z');
         if(!$compressed && isset($info['length2'])) {
-          $header=(ord($font{0})==128);
+          $header=(ord($font[0])==128);
           if($header) {
             //Strip first binary header
             $font=substr($font,6);
           }
-          if($header && ord($font{$info['length1']})==128) {
+          if($header && ord($font[$info['length1']])==128) {
             //Strip second binary header
             $font=substr($font,0,$info['length1']).substr($font,$info['length1']+6);
           }
@@ -2719,7 +2716,6 @@ if (!class_exists('FPDF')) {
         $this->_putstream($font);
         $this->_out('endobj');
       }
-      set_magic_quotes_runtime($mqr);
 
       foreach ($this->fonts as $k=>$font) {
         //Font objects
@@ -2747,7 +2743,7 @@ if (!class_exists('FPDF')) {
             
           //Widths
           $this->_newobj();
-          $cw=&$font['cw'];
+          $cw=$font['cw'];
           $s='[';
           for ($i=32;$i<=255;$i++) {
             $s.=$cw[chr($i)].' ';
@@ -2779,7 +2775,7 @@ if (!class_exists('FPDF')) {
     function _putimages() {
       $filter=($this->compress) ? '/Filter /FlateDecode ' : '';
       reset($this->images);
-      while (list($file,$info) = each($this->images)) {
+      foreach ($this->images as $file => $info) {
         $this->_newobj();
         $this->images[$file]['n']=$this->n;
         $this->_out('<</Type /XObject');
@@ -2930,7 +2926,7 @@ if (!class_exists('FPDF')) {
 
       // Form fields
       for ($i=0; $i<count($this->_forms); $i++) {
-        $form =& $this->_forms[$i];
+        $form = $this->_forms[$i];
 
         $form->out($this);
 
@@ -2995,7 +2991,7 @@ if (!class_exists('FPDF')) {
       if(!$orientation) {
         $orientation=$this->DefOrientation;
       } else {
-        $orientation=strtoupper($orientation{0});
+        $orientation=strtoupper($orientation[0]);
         if($orientation!=$this->DefOrientation) {
           $this->OrientationChanges[$this->page]=true;
         };

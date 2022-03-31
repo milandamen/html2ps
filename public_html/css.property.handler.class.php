@@ -5,7 +5,7 @@ class CSSPropertyHandler {
   var $_inheritable_text;
 
   function css($value, &$pipeline) { 
-    $css_state =& $pipeline->get_current_css_state();
+    $css_state = $pipeline->get_current_css_state();
 
     if ($this->applicable($css_state)) {
       $this->replace($this->parse($value, $pipeline), $css_state); 
@@ -20,7 +20,7 @@ class CSSPropertyHandler {
     $state->set_propertyDefaultFlag($this->get_property_code(), false);
   }
 
-  function CSSPropertyHandler($inheritable, $inheritable_text) { 
+  function __construct($inheritable, $inheritable_text) {
     $this->_inheritable = $inheritable;
     $this->_inheritable_text = $inheritable_text;
   }
@@ -49,7 +49,7 @@ class CSSPropertyHandler {
     $code = $this->get_property_code();
     $new_state[$code] = ($this->_inheritable ? 
                          $old_state[$code] : 
-                         $this->default_value());
+                         $this->default_value_m());
   }
 
   function isInheritableText() { 
@@ -66,7 +66,7 @@ class CSSPropertyHandler {
     if ($this->_inheritable_text) {
       $new_state[$code] = $old_state[$code];
     } else {
-      $new_state[$code] = $this->default_value();
+      $new_state[$code] = $this->default_value_m();
     };
   }
 
@@ -74,7 +74,7 @@ class CSSPropertyHandler {
     if (is_object($value)) {
       return $value->is_default();
     } else {
-      return $this->default_value() === $value; 
+      return $this->default_value_m() === $value;
     };
   }
 

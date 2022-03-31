@@ -75,10 +75,10 @@ class VerticalAlignTextBottom {
 }
 
 class CSSVerticalAlign extends CSSPropertyHandler {
-  function CSSVerticalAlign() { 
+  function __construct() {
     // Note that in general, parameters 'true' and 'false' are non meaningful in out case,
     // as we anyway override 'inherit' and 'inherit_text' in this class.
-    $this->CSSPropertyHandler(true, true); 
+    parent::__construct(true, true);
   }
 
   function inherit($old_state, &$new_state) { 
@@ -110,6 +110,7 @@ class CSSVerticalAlign extends CSSPropertyHandler {
   }
 
   function default_value() { return VA_BASELINE; }
+  function default_value_m() { return VA_BASELINE; }
 
   function parse($value) {
     if ($value === 'inherit') {
@@ -136,7 +137,7 @@ class CSSVerticalAlign extends CSSPropertyHandler {
     return $this->default_value();
   }
 
-  function value2pdf($value) {
+  static function value2pdf($value) {
     if ($value === VA_SUPER)       { return new VerticalAlignSuper; }
     if ($value === VA_SUB)         { return new VerticalAlignSub; }
     if ($value === VA_TOP)         { return new VerticalAlignTop; }
@@ -149,7 +150,7 @@ class CSSVerticalAlign extends CSSPropertyHandler {
   }
 
   function applicable($css_state) {
-    $handler =& CSS::get_handler(CSS_DISPLAY);
+    $handler = CSS::get_handler(CSS_DISPLAY);
     $display = $handler->get($css_state->getState());
     return
       $display === 'table-cell' ||

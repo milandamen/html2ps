@@ -5,7 +5,7 @@ class CSSRuleset {
   var $tag_filtered;
   var $_lastId;
 
-  function CSSRuleset() {
+  function __construct() {
     $this->rules        = array();
     $this->tag_filtered = array();
     $this->_lastId      = 0;
@@ -28,7 +28,7 @@ class CSSRuleset {
 
     if (!is_allowed_media($media_list)) { 
       if (defined('DEBUG_MODE')) {
-        error_log(sprintf('No allowed (%s) media types found in CSS stylesheet media types (%s). Stylesheet ignored.',
+        log_error(sprintf('No allowed (%s) media types found in CSS stylesheet media types (%s). Stylesheet ignored.',
                           join(',', config_get_allowed_media()),
                           join(',', $media_list)));
       };
@@ -105,7 +105,7 @@ class CSSRuleset {
     // remove the UTF8 byte-order mark from the beginning of the file (several high-order symbols at the beginning)
     $pos = 0;
     $len = strlen($css);
-    while (ord($css{$pos}) > 127 && $pos < $len) { $pos ++; };
+    while (ord($css[$pos]) > 127 && $pos < $len) { $pos ++; };
     $css = substr($css, $pos);
 
     // Process @media rules; 
@@ -260,11 +260,11 @@ class CSSRuleset {
     foreach ($applicable as $rule) {
       switch ($rule->get_pseudoelement()) {
       case SELECTOR_PSEUDOELEMENT_BEFORE:
-        $handler =& CSS::get_handler(CSS_HTML2PS_PSEUDOELEMENTS);
+        $handler = CSS::get_handler(CSS_HTML2PS_PSEUDOELEMENTS);
         $handler->replace($handler->get($state->getState()) | CSS_HTML2PS_PSEUDOELEMENTS_BEFORE, $state);
         break;
       case SELECTOR_PSEUDOELEMENT_AFTER:
-        $handler =& CSS::get_handler(CSS_HTML2PS_PSEUDOELEMENTS);
+        $handler = CSS::get_handler(CSS_HTML2PS_PSEUDOELEMENTS);
         $handler->replace($handler->get($state->getState()) | CSS_HTML2PS_PSEUDOELEMENTS_AFTER, $state);
         break;
       default:
@@ -288,10 +288,10 @@ class CSSRuleset {
     $applicable = array();
 
     for ($i=0; $i<count($local_css); $i++) {
-      $rule =& $local_css[$i];
+      $rule = $local_css[$i];
       if ($rule->get_pseudoelement() == $element_type) {
         if ($rule->match($root)) {
-          $applicable[] =& $rule;
+          $applicable[] = $rule;
         };
       };
     };

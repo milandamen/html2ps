@@ -13,7 +13,11 @@ class CSS {
 
       $handlers = $this->getHandlers();
       foreach ($handlers as $property => $handler) {
-        $this->_defaultState[$property] = $handler->default_value();
+        if (method_exists($handler, 'default_value_m')) {
+          $this->_defaultState[$property] = $handler->default_value_m();
+        } else {
+          $this->_defaultState[$property] = $handler->default_value();
+        }
       };
     };
 
@@ -42,7 +46,7 @@ class CSS {
       $this->_handlersInheritabletext = array();
       foreach ($this->_handlers as $property => $handler) {
         if ($handler->isInheritableText()) {
-          $this->_handlersInheritableText[$property] =& $this->_handlers[$property];
+          $this->_handlersInheritableText[$property] = $this->_handlers[$property];
         };
       }
     }
@@ -55,7 +59,7 @@ class CSS {
       $this->_handlersInheritable = array();
       foreach ($this->_handlers as $property => $handler) {
         if ($handler->isInheritable()) {
-          $this->_handlersInheritable[$property] =& $this->_handlers[$property];
+          $this->_handlersInheritable[$property] = $this->_handlers[$property];
         };
       }
     }
@@ -63,7 +67,7 @@ class CSS {
     return $this->_handlersInheritable;
   }
 
-  function &get() {
+  static function &get() {
     global $__g_css_handler_set;
 
     if (!isset($__g_css_handler_set)) {
@@ -73,15 +77,19 @@ class CSS {
     return $__g_css_handler_set;
   }
 
-  function CSS() {
+  function __construct() {
     $this->_handlers = array();
     $this->_mapping  = array();
   }
 
-  function getDefaultValue($property) {
-    $css =& CSS::get();
-    $handler =& $css->_get_handler($property);
-    $value = $handler->default_value();
+  static function getDefaultValue($property) {
+    $css = CSS::get();
+    $handler = $css->_get_handler($property);
+    if (method_exists($handler, 'default_value_m')) {
+      $value = $handler->default_value_m();
+    } else {
+      $value = $handler->default_value();
+    }
 
     if (is_object($value)) {
       return $value->copy();
@@ -90,9 +98,9 @@ class CSS {
     };
   }
 
-  function &get_handler($property) {
-    $css =& CSS::get();
-    $handler =& $css->_get_handler($property);
+  static function get_handler($property) {
+    $css = CSS::get();
+    $handler = $css->_get_handler($property);
     return $handler;
   }
 
@@ -113,17 +121,17 @@ class CSS {
     return $this->_mapping[$key];
   }
 
-  function name2code($key) {
-    $css =& CSS::get();
+  static function name2code($key) {
+    $css = CSS::get();
     return $css->_name2code($key);
   }
 
-  function register_css_property(&$handler) {
+  static function register_css_property($handler) {
     $property = $handler->get_property_code();
     $name     = $handler->get_property_name();
 
-    $css =& CSS::get();
-    $css->_handlers[$property] =& $handler;
+    $css = CSS::get();
+    $css->_handlers[$property] = $handler;
     $css->_mapping[$name] = $property;
   }
 
@@ -137,17 +145,17 @@ class CSS {
    * nmchar		[_a-z0-9-]|{nonascii}|{escape}
    * ident		-?{nmstart}{nmchar}*
    */
-  function get_identifier_regexp() {
+  static function get_identifier_regexp() {
     return '-?(?:[_a-z]|[\200-\377]|\\[0-9a-f]{1,6}(?:\r\n|[ \t\r\n\f])?|\\[^\r\n\f0-9a-f])(?:[_a-z0-9-]|[\200-\377]|\\[0-9a-f]{1,6}(?:\r\n|[ \t\r\n\f])?|\\[^\r\n\f0-9a-f])*';
   }
 
-  function is_identifier($string) {
+  static function is_identifier($string) {
     return preg_match(sprintf('/%s/', 
                               CSS::get_identifier_regexp()), 
                       $string);
   }
 
-  function parse_string($string) {
+  static function parse_string($string) {
     if (preg_match(sprintf('/^(%s)\s*(.*)$/s', CSS_STRING1_REGEXP), $string, $matches)) {
       $value = $matches[1];
       $rest = $matches[2];
@@ -169,7 +177,7 @@ class CSS {
     return array(null, $string);
   }
 
-  function remove_backslash_at_newline($value) {
+  static function remove_backslash_at_newline($value) {
     return preg_replace("/\\\\\n/", '', $value);
   }
 }

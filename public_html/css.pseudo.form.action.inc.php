@@ -1,7 +1,7 @@
 <?php
 
 class CSSPseudoFormAction extends CSSPropertyHandler {
-  function CSSPseudoFormAction() { $this->CSSPropertyHandler(true, true); }
+  function __construct() { parent::__construct(true, true); }
 
   function default_value() { return null; }
 

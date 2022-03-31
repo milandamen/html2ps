@@ -19,10 +19,10 @@ class BoxNoteCall extends GenericInlineBox {
     $this->_note_call_box->offset($dx, $dy);
   }
 
-  function BoxNoteCall(&$content, &$pipeline) {
-    $this->GenericInlineBox();
+  function __construct(&$content, &$pipeline) {
+    parent::__construct();
 
-    $this->_note_content =& $content;
+    $this->_note_content = $content;
 
     $this->copy_style($content);
     $this->put_height_constraint(new HCConstraint(null, null, null));
@@ -62,17 +62,17 @@ class BoxNoteCall extends GenericInlineBox {
     $font->size->scale(0.5);
     $this->_note_marker_box->content[0]->setCSSProperty(CSS_FONT, $font);
 
-    $margin = $this->_note_marker_box->content[0]->get_css_property(CSS_MARGIN);
-    $margin = $margin->copy();
-    $margin->right = Value::fromData(FOOTNOTE_MARKER_MARGIN, UNIT_PT);
-    $this->_note_marker_box->content[0]->setCSSProperty(CSS_MARGIN, $margin);
+    $this->margin = $this->_note_marker_box->content[0]->get_css_property(CSS_MARGIN);
+    $this->margin = $this->margin->copy();
+    $this->margin->right = Value::fromData(FOOTNOTE_MARKER_MARGIN, UNIT_PT);
+    $this->_note_marker_box->content[0]->setCSSProperty(CSS_MARGIN, $this->margin);
 
 
     $this->_note_marker_box->content[0]->setCSSProperty(CSS_VERTICAL_ALIGN, VA_SUPER);
     $this->_note_marker_box->content[0]->setCSSProperty(CSS_LINE_HEIGHT, CSS::getDefaultValue(CSS_LINE_HEIGHT));
   }
 
-  function &create(&$content, &$pipeline) {
+  static function create(&$content, &$pipeline) {
     $box = new BoxNoteCall($content, $pipeline);
 
     return $box;
@@ -117,7 +117,7 @@ class BoxNoteCall extends GenericInlineBox {
 
     $this->_note_call_box->moveto($this->get_left(), $this->get_top());
 
-//     $last =& $parent->last_in_line();
+//     $last = $parent->last_in_line();
 //     $last->note_call = true;
 
     return true;

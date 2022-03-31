@@ -2,8 +2,8 @@
 // $Header: /cvsroot/html2ps/box.frame.php,v 1.24 2007/02/18 09:55:10 Konstantin Exp $
 
 class FrameBox extends GenericContainerBox {
-  function &create(&$root, &$pipeline) {
-    $box =& new FrameBox($root, $pipeline);
+  static function create(&$root, &$pipeline) {
+    $box = new FrameBox($root, $pipeline);
     $box->readCSS($pipeline->get_current_css_state());
     return $box;
   }
@@ -42,7 +42,7 @@ class FrameBox extends GenericContainerBox {
   function reflow_absolute(&$context) {
     GenericFormattedBox::reflow($this->parent, $context);
 
-    $position_strategy =& new StrategyPositionAbsolute();
+    $position_strategy = new StrategyPositionAbsolute();
     $position_strategy->apply($this);
     
     /**
@@ -69,7 +69,7 @@ class FrameBox extends GenericContainerBox {
      */
     $wc = $this->get_css_property(CSS_WIDTH);
 
-    $containing_block =& $this->_get_containing_block();
+    $containing_block = $this->_get_containing_block();
     $this->put_width($wc->apply($this->get_width(), 
                                 $containing_block['right'] - $containing_block['left']));
     $this->setCSSProperty(CSS_WIDTH, new WCNone());
@@ -102,8 +102,8 @@ class FrameBox extends GenericContainerBox {
     };
   }
 
-  function FrameBox(&$root, &$pipeline) {
-    $css_state =& $pipeline->get_current_css_state();
+  function __construct(&$root, &$pipeline) {
+    $css_state = $pipeline->get_current_css_state();
 
     // Inherit 'border' CSS value from parent (FRAMESET tag), if current FRAME 
     // has no FRAMEBORDER attribute, and FRAMESET has one
@@ -114,7 +114,7 @@ class FrameBox extends GenericContainerBox {
       $css_state->set_property(CSS_BORDER, $parent_border->copy());
     }
 
-    $this->GenericContainerBox($root);
+    parent::__construct($root);
 
     // If NO src attribute specified, just return.
     if (!$root->has_attribute('src')) { return; };
@@ -150,11 +150,11 @@ class FrameBox extends GenericContainerBox {
     // Save current stylesheet, as each frame may load its own stylesheets
     //
     $pipeline->push_css();
-    $css =& $pipeline->get_current_css();
+    $css = $pipeline->get_current_css();
     $css->scan_styles($tree, $pipeline);
     
     $frame_root = traverse_dom_tree_pdf($tree);   
-    $box_child  =& create_pdf_box($frame_root, $pipeline);
+    $box_child  = create_pdf_box($frame_root, $pipeline);
     $this->add_child($box_child);
     
     // Restore old stylesheet
@@ -221,14 +221,14 @@ class FramesetBox extends GenericContainerBox {
   var $rows;
   var $cols;
 
-  function &create(&$root, &$pipeline) {
-    $box =& new FramesetBox($root, $pipeline);
+  static function create(&$root, &$pipeline) {
+    $box = new FramesetBox($root, $pipeline);
     $box->readCSS($pipeline->get_current_css_state());
     return $box;
   }
 
-  function FramesetBox(&$root, $pipeline) {
-    $this->GenericContainerBox($root);
+  function __construct(&$root, $pipeline) {
+    parent::__construct($root);
     $this->create_content($root, $pipeline);
     
     // Now determine the frame layout inside the frameset
@@ -237,7 +237,7 @@ class FramesetBox extends GenericContainerBox {
   }
 
   function reflow(&$parent, &$context) {
-    $viewport =& $context->get_viewport();
+    $viewport = $context->get_viewport();
 
     // Frameset always fill all available space in viewport
     $this->put_left($viewport->get_left() + $this->get_extra_left());
@@ -264,7 +264,7 @@ class FramesetBox extends GenericContainerBox {
         return;
       }
 
-      $frame =& $this->content[$i];
+      $frame = $this->content[$i];
 
       /**
        * Depending on the source HTML, FramesetBox may contain some non-frame boxes; 

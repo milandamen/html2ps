@@ -14,14 +14,14 @@ class CSSBackground extends CSSPropertyHandler {
     return 'background';
   }
 
-  function CSSBackground() {
+  function __construct() {
     $this->default_value = new Background(CSSBackgroundColor::default_value(),
                                           CSSBackgroundImage::default_value(),
                                           CSSBackgroundRepeat::default_value(),
                                           CSSBackgroundPosition::default_value(),
                                           CSSBackgroundAttachment::default_value());
 
-    $this->CSSPropertyHandler(true, false);
+    parent::__construct(true, false);
   }
 
   function inherit($state, &$new_state) { 
@@ -29,11 +29,11 @@ class CSSBackground extends CSSPropertyHandler {
     $parent_display = $state[CSS_DISPLAY];
 
     // If parent is a table row, inherit the background settings
-    $this->replace_array(($parent_display == 'table-row') ? $state[CSS_BACKGROUND] : $this->default_value(),
+    $this->replace_array(($parent_display == 'table-row') ? $state[CSS_BACKGROUND] : $this->default_value_m(),
                          $new_state);
   }
 
-  function default_value() {
+  function default_value_m() {
     return $this->default_value->copy();
   }
 

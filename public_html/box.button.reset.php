@@ -1,18 +1,18 @@
 <?php
 
 class ButtonResetBox extends ButtonBox {
-  function ButtonResetBox($text) {
-    $this->ButtonBox($text);
+  function __construct($text) {
+    parent::__construct($text);
   }
 
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     if ($root->has_attribute("value")) {
       $text = $root->get_attribute("value");
     } else {
       $text = DEFAULT_RESET_TEXT;
     };
 
-    $box =& new ButtonResetBox($text);
+    $box = new ButtonResetBox($text);
     $box->readCSS($pipeline->get_current_css_state());
 
     return $box;

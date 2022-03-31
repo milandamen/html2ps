@@ -4,8 +4,8 @@
 class OutputDriverGenericPDF extends OutputDriverGeneric {
   var $pdf_version;
 
-  function OutputDriverGenericPDF() {
-    $this->OutputDriverGeneric();
+  function __construct() {
+    parent::__construct();
     $this->set_pdf_version("1.3");
   }
 
@@ -15,7 +15,7 @@ class OutputDriverGenericPDF extends OutputDriverGeneric {
     return $this->pdf_version; 
   }
 
-  function reset($media) {
+  function reset(&$media) {
     OutputDriverGeneric::reset($media);
   }
 

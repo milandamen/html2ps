@@ -1,6 +1,6 @@
 <?php
 class DataFilterEncoding extends DataFilter {
-  function DataFilterEncoding($encoding) {
+  function __construct($encoding) {
     $this->encoding = $encoding;
   }
 

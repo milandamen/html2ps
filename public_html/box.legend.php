@@ -2,7 +2,7 @@
 // $Header: /cvsroot/html2ps/box.legend.php,v 1.14 2006/07/09 09:07:44 Konstantin Exp $
 
 class LegendBox extends GenericContainerBox {
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     $box = new LegendBox($root);
     $box->readCSS($pipeline->get_current_css_state());
     $box->create_content($root, $pipeline);
@@ -10,9 +10,9 @@ class LegendBox extends GenericContainerBox {
     return $box;
   }
 
-  function LegendBox(&$root) {
+  function __construct(&$root) {
     // Call parent constructor
-    $this->GenericContainerBox();
+    parent::__construct();
 
     $this->_current_x = 0;
     $this->_current_y = 0;

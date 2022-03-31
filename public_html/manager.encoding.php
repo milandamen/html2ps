@@ -36,7 +36,7 @@ class ManagerEncoding {
 
   var $_utf8_mapping;
 
-  function ManagerEncoding() {
+  function __construct() {
     $this->new_custom_encoding_vector();
   }
 
@@ -92,7 +92,7 @@ class ManagerEncoding {
     fclose($file);
   }
 
-  function &get() {
+  static function get() {
     global $g_manager_encodings;
     return $g_manager_encodings;
   }
@@ -123,7 +123,7 @@ class ManagerEncoding {
   function get_encoding_glyphs($encoding) {
     $vector = $this->get_encoding_vector($encoding);
     if (is_null($vector)) { 
-      error_log(sprintf("Cannot get encoding vector for encoding '%s'", $encoding));
+      log_error(sprintf("Cannot get encoding vector for encoding '%s'", $encoding));
       return null; 
     };
     return $this->vector_to_glyphs($vector);
@@ -182,7 +182,7 @@ class ManagerEncoding {
     return $this->_utf8_mapping[$char];
   }
 
-  function get_next_utf8_char($raw_content, &$ptr) {
+  static function get_next_utf8_char($raw_content, &$ptr) {
     if ((ord($raw_content[$ptr]) & 0xF0) == 0xF0) {
       $charlen = 4;
     } elseif ((ord($raw_content[$ptr]) & 0xE0) == 0xE0) {
@@ -218,7 +218,7 @@ class ManagerEncoding {
     return $result;
   }
 
-  function is_custom_encoding($encoding) {
+  static function is_custom_encoding($encoding) {
     return preg_match('/^custom\d+$/', $encoding);
   }
 
@@ -267,7 +267,7 @@ class ManagerEncoding {
     
     $converted = '';
     for ($i=0, $size=strlen($word); $i < $size; $i++) {
-      $converted .= code_to_utf8($vector[$word{$i}]);
+      $converted .= code_to_utf8($vector[$word[$i]]);
     };
 
     return $converted;

@@ -160,7 +160,7 @@ function parse_css_selector($raw_selector) {
     return array(SELECTOR_SEQUENCE, array(parse_css_selector($matches[1]), parse_css_selector($matches[2])));
   };
 
-  switch ($raw_selector{0}) {
+  switch ($raw_selector[0]) {
   case '#':
     return array(SELECTOR_ID,    substr($raw_selector,1));
   case '.':
@@ -207,28 +207,28 @@ function parse_css_selectors($raw_selectors) {
 //     $name = strtolower(trim($matches[1]));
 //     $code = CSS::name2code($name);
 //     if (is_null($code)) { 
-//       error_log(sprintf("Unsupported CSS property: '%s'", $name));
+//       log_error(sprintf("Unsupported CSS property: '%s'", $name));
 //       $null = null;
 //       return $null;
 //     };
 
-//     $collection =& new CSSPropertyCollection();
+//     $collection = new CSSPropertyCollection();
 //     $collection->add_property(CSSPropertyDeclaration::create($code, trim($matches[2]), $pipeline));
 //     return $collection;
 //   } elseif (preg_match("/@import\s+\"(.*)\";/",$property, $matches)) {
 //     // @import "<url>"
-//     $collection =& css_import(trim($matches[1]), $pipeline);
+//     $collection = css_import(trim($matches[1]), $pipeline);
 //     return $collection;
 //   } elseif (preg_match("/@import\s+url\((.*)\);/",$property, $matches)) {
 //     // @import url()
-//     $collection =& css_import(trim($matches[1]), $pipeline);
+//     $collection = css_import(trim($matches[1]), $pipeline);
 //     return $collection;
 //   } elseif (preg_match("/@import\s+(.*);/",$property, $matches)) {
 //     // @import <url>
-//     $collection =& css_import(trim($matches[1]), $pipeline);
+//     $collection = css_import(trim($matches[1]), $pipeline);
 //     return $collection;
 //   } else {
-//     $collection =& new CSSPropertyCollection();
+//     $collection = new CSSPropertyCollection();
 //     return $collection;
 //   };
 // }

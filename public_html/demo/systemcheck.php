@@ -33,7 +33,7 @@ function status2class($status) {
     return $mapping[$status];
   };
 
-  error_log(sprintf("Unknown status code passed to 'status2class': %s", $status));
+  log_error(sprintf("Unknown status code passed to 'status2class': %s", $status));
   return "unknown";
 }
 
@@ -54,12 +54,12 @@ EOF;
 }
 
 class ManagerChecks {
-  function register($check) {
+  static function register($check) {
     global $__g_registered_checks;
     $__g_registered_checks[] = $check;
   }
 
-  function run() {
+  static function run() {
     global $__g_registered_checks;
     $size = count($__g_registered_checks);
     for ($i=0; $i<$size; $i++) {
@@ -67,7 +67,7 @@ class ManagerChecks {
     };
   }
 
-  function getChecks() {
+  static function getChecks() {
     global $__g_registered_checks;
     return $__g_registered_checks;
   }

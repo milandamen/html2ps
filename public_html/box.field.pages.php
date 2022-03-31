@@ -4,11 +4,11 @@
  *
  */
 class BoxTextFieldPages extends TextBoxString {
-  function BoxTextFieldPages() { 
-    $this->TextBoxString("", "iso-8859-1");
+  function __construct() {
+    parent::__construct("", "iso-8859-1");
   }
 
-  function from_box(&$box) {
+  static function from_box(&$box) {
     $field = new BoxTextFieldPages;
 
     $field->copy_style($box);

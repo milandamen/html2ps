@@ -6,8 +6,8 @@ define('VISIBILITY_HIDDEN',1);
 define('VISIBILITY_COLLAPSE',2); // TODO: currently treated is hidden
 
 class CSSVisibility extends CSSPropertyStringSet {
-  function CSSVisibility() { 
-    $this->CSSPropertyStringSet(false, 
+  function __construct() {
+    parent::__construct(false,
                                 false,
                                 array('inherit'  => CSS_PROPERTY_INHERIT,
                                       'visible'  => VISIBILITY_VISIBLE,

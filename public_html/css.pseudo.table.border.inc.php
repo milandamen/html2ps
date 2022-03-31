@@ -6,8 +6,8 @@ require_once(HTML2PS_DIR.'value.border.edge.class.php');
 class CSSPseudoTableBorder extends CSSPropertyHandler {
   var $_defaultValue;
 
-  function CSSPseudoTableBorder() {
-    $this->CSSPropertyHandler(true, false);
+  function __construct() {
+    parent::__construct(true, false);
 
     $this->_defaultValue = BorderPDF::create(array('top'    => array('width' => Value::fromString('2px'), 
                                                                      'color' => array(0,0,0), 
@@ -23,7 +23,7 @@ class CSSPseudoTableBorder extends CSSPropertyHandler {
                                                                      'style' => BS_NONE)));
   }
 
-  function default_value() {
+  function default_value_m() {
     return $this->_defaultValue->copy();
   }
 
@@ -47,7 +47,7 @@ class CSSPseudoTableBorder extends CSSPropertyHandler {
       return;
     }
        
-    $this->replace_array($this->default_value(), $new_state);
+    $this->replace_array($this->default_value_m(), $new_state);
     return;
   }
 }

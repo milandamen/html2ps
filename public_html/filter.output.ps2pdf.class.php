@@ -8,18 +8,18 @@ function safe_exec($cmd, &$output) {
 
     if (count($output) > 0) {
       $message .= "Error executing '{$cmd}'<br/>\n";
-      error_log("Error executing '{$cmd}'.");
+      log_error("Error executing '{$cmd}'.");
       $message .= "Command produced the following output:<br/>\n";
-      error_log("Command produced the following output:");
+      log_error("Command produced the following output:");
 
       foreach ($output as $line) {
         $message .= "{$line}<br/>\n";
-        error_log($line);
+        log_error($line);
       };
     } else {
       $_cmd = $cmd;
       include(HTML2PS_DIR.'templates/error_exec.tpl');
-      error_log("Error executing '{$cmd}'. Command produced no output.");
+      log_error("Error executing '{$cmd}'. Command produced no output.");
       die("HTML2PS Error");
     };
     die($message);
@@ -37,7 +37,7 @@ class OutputFilterPS2PDF extends OutputFilter {
     return GS_PATH." -dNOPAUSE -dBATCH -dEmbedAllFonts=true -dCompatibilityLevel=".$this->pdf_version." -sDEVICE=pdfwrite -sOutputFile=".$filename.".pdf ".$filename;
   }
 
-  function OutputFilterPS2PDF($pdf_version) {
+  function __construct($pdf_version) {
     $this->pdf_version = $pdf_version;
   }
 

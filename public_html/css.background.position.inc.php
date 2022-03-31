@@ -20,12 +20,12 @@ class CSSBackgroundPosition extends CSSSubFieldProperty {
     return 'background-position';
   }
 
-  function default_value() {
+  static function default_value() {
     return new BackgroundPosition(0,true,
                                   0,true);
   }
 
-  function build_subvalue($value) {
+  static function build_subvalue($value) {
     if ($value === "left" ||
         $value === "top") {
       return array(0, true);
@@ -47,12 +47,12 @@ class CSSBackgroundPosition extends CSSSubFieldProperty {
     };
   }
 
-  function build_value($x, $y) {
+  static function build_value($x, $y) {
     return array(CSSBackgroundPosition::build_subvalue($x),
                  CSSBackgroundPosition::build_subvalue($y));
   }
 
-  function detect_type($value) {
+  static function detect_type($value) {
     if ($value === "left" || $value === "right") { return BG_POSITION_SUBVALUE_TYPE_HORZ; };
     if ($value === "top" || $value === "bottom") { return BG_POSITION_SUBVALUE_TYPE_VERT; };
     return null;
@@ -60,7 +60,7 @@ class CSSBackgroundPosition extends CSSSubFieldProperty {
 
   // See CSS 2.1 'background-position' for description of possible values
   //
-  function parse_in($value) {
+  static function parse_in($value) {
     if (preg_match("/(".LENGTH_REGEXP."|".PERCENTAGE_REGEXP."|".TEXT_REGEXP."|\b0\b)\s+(".LENGTH_REGEXP."|".PERCENTAGE_REGEXP."|".TEXT_REGEXP."|\b0\b)/", $value, $matches)) {
       $x = $matches[1];
       $y = $matches[2];
@@ -95,12 +95,15 @@ class CSSBackgroundPosition extends CSSSubFieldProperty {
     return null;
   }
 
-  function parse($value) {
+  static function parse($value) {
     if ($value === 'inherit') {
       return CSS_PROPERTY_INHERIT;
     };
 
     $value = CSSBackgroundPosition::parse_in($value);
+    if ($value === null) {
+        return null;
+    }
     return new BackgroundPosition($value[0][0], $value[0][1],
                                   $value[1][0], $value[1][1]);
   }

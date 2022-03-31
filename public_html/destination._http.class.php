@@ -1,7 +1,7 @@
 <?php
-class DestinationHTTP extends Destination {  
-  function DestinationHTTP($filename) {
-    $this->Destination($filename);
+class DestinationHTTP extends Destination {
+  function __construct($filename) {
+    parent::__construct($filename);
   }
 
   function headers($content_type) {
@@ -10,7 +10,7 @@ class DestinationHTTP extends Destination {
 
   function process($tmp_filename, $content_type) {
     header("Content-Type: ".$content_type->mime_type);
-    
+
     $headers = $this->headers($content_type);
     foreach ($headers as $header) {
       header($header);

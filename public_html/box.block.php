@@ -21,8 +21,8 @@ class BlockBox extends GenericContainerBox {
   /**
    * Create empty block element
    */
-  function BlockBox() {
-    $this->GenericContainerBox();
+  function __construct() {
+    parent::__construct();
   }
 
   /**
@@ -35,7 +35,7 @@ class BlockBox extends GenericContainerBox {
    *
    * @see GenericContainerBox::create_content()
    */
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     $box = new BlockBox();
     $box->readCSS($pipeline->get_current_css_state());
     $box->create_content($root, $pipeline);
@@ -53,12 +53,13 @@ class BlockBox extends GenericContainerBox {
    * @see InlineBox
    * @see InlineBox::create_from_text()
    */
-  function &create_from_text($content, &$pipeline) {
+  static function create_from_text($content, &$pipeline) {
     $box = new BlockBox();
     $box->readCSS($pipeline->get_current_css_state());
-    $box->add_child(InlineBox::create_from_text($content, 
-                                                $box->get_css_property(CSS_WHITE_SPACE),
-                                                $pipeline));
+      $inlineBox = InlineBox::create_from_text($content,
+        $box->get_css_property(CSS_WHITE_SPACE),
+        $pipeline);
+      $box->add_child($inlineBox);
     return $box;
   }
 
@@ -131,13 +132,13 @@ class BlockBox extends GenericContainerBox {
    * @link http://www.w3.org/TR/CSS21/visuren.html#dis-pos-flo CSS 2.1: Relationships between 'display', 'position', and 'float'
    */
   function reflow_absolute(&$context) {
-    $parent_node =& $this->get_parent_node();
+    $parent_node = $this->get_parent_node();
     parent::reflow($parent_node, $context);
   
-    $width_strategy =& new StrategyWidthAbsolutePositioned();
+    $width_strategy = new StrategyWidthAbsolutePositioned();
     $width_strategy->apply($this, $context);
 
-    $position_strategy =& new StrategyPositionAbsolute();
+    $position_strategy = new StrategyPositionAbsolute();
     $position_strategy->apply($this);
     
     $this->reflow_content($context);
@@ -190,7 +191,7 @@ class BlockBox extends GenericContainerBox {
      * @todo Update the family of get_..._width function so that they would apply constraint
      * using the containing block width, not "real" parent width
      */
-    $containing_block =& $this->_get_containing_block();
+    $containing_block = $this->_get_containing_block();
     $wc = $this->get_css_property(CSS_WIDTH);
     $this->put_full_width($wc->apply($this->get_width(),
                                      $containing_block['right'] - $containing_block['left']));
@@ -357,7 +358,7 @@ class BlockBox extends GenericContainerBox {
      * first - the value of collapsed bottom margin of the last child AND
      * second - the value of collapsed top margin of current element.
      */
-    $margin = $this->get_css_property(CSS_MARGIN);
+    $this->margin = $this->get_css_property(CSS_MARGIN);
        
     if ($parent) {
       /**

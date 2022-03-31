@@ -5,8 +5,8 @@ define('OVERFLOW_VISIBLE',0);
 define('OVERFLOW_HIDDEN',1);
 
 class CSSOverflow extends CSSPropertyStringSet {
-  function CSSOverflow() { 
-    $this->CSSPropertyStringSet(false, 
+  function __construct() {
+    parent::__construct(false,
                                 false,
                                 array('inherit' => CSS_PROPERTY_INHERIT,
                                       'hidden'  => OVERFLOW_HIDDEN,

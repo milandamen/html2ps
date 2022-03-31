@@ -5,7 +5,7 @@ class StrategyWidthMaxNatural {
   var $_maxw;
   var $_cmaxw;
 
-  function StrategyWidthMaxNatural($limit = 10E6) {
+  function __construct($limit = 10E6) {
     $this->_limit = $limit;
   }
 
@@ -29,7 +29,7 @@ class StrategyWidthMaxNatural {
     $this->_cmaxw = $text_indent->calculate($box);
     
     for ($i=0, $size = count($box->content); $i<$size; $i++) {
-      $child =& $box->content[$i];
+      $child = $box->content[$i];
 
       // Note that while BR-generated box is out of flow,
       // it should break the current line

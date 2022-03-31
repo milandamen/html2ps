@@ -15,8 +15,8 @@ class TextBox extends SimpleInlineBox {
   var $_wrappable;
   var $wrapped;
 
-  function TextBox() {
-    $this->SimpleInlineBox();
+  function __construct() {
+    parent::__construct();
 
     $this->words        = array();
     $this->encodings    = array();
@@ -61,7 +61,7 @@ class TextBox extends SimpleInlineBox {
   }
 
   function get_content_callback($word, $encoding) {
-    $manager_encoding =& ManagerEncoding::get();
+    $manager_encoding = ManagerEncoding::get();
     return $manager_encoding->to_utf8($word, $encoding);
   }
 
@@ -105,7 +105,7 @@ class TextBox extends SimpleInlineBox {
       return $this->_cache[CACHE_TYPEFACE][$subword_index];
     };
 
-    $font_resolver =& $viewport->get_font_resolver();
+    $font_resolver = $viewport->get_font_resolver();
 
     $font = $this->get_css_property(CSS_FONT);
 
@@ -141,14 +141,14 @@ class TextBox extends SimpleInlineBox {
     $this->hyphens[]   = $hyphens;
   }
 
-  function &create($text, $encoding, &$pipeline) {
-    $box =& TextBox::create_empty($pipeline);
+  static function create($text, $encoding, &$pipeline) {
+    $box = TextBox::create_empty($pipeline);
     $box->add_subword($text, $encoding, array());
     return $box;
   }
 
-  function &create_empty(&$pipeline) {
-    $box =& new TextBox();
+  static function create_empty(&$pipeline) {
+    $box = new TextBox();
     $css_state = $pipeline->get_current_css_state();
 
     $box->readCSS($css_state);
@@ -201,7 +201,7 @@ class TextBox extends SimpleInlineBox {
       return false;
     };
 
-    $last =& $parent->last_in_line();
+    $last = $parent->last_in_line();
     if ($last) {
       // Check  if last  box was  a note  call box.  Punctuation marks
       // after  a note-call  box should  not be  wrapped to  new line,
@@ -360,13 +360,13 @@ class TextBox extends SimpleInlineBox {
      */
     $ascender  = $driver->font_ascender($font_name, $this->encodings[0]);
     if (is_null($ascender)) {
-      error_log("TextBox::reflow_text: cannot get font ascender");
+      log_error("TextBox::reflow_text: cannot get font ascender");
       return null;
     };
 
     $descender = $driver->font_descender($font_name, $this->encodings[0]); 
     if (is_null($descender)) {
-      error_log("TextBox::reflow_text: cannot get font descender");
+      log_error("TextBox::reflow_text: cannot get font descender");
       return null;
     };
 
@@ -421,7 +421,7 @@ class TextBox extends SimpleInlineBox {
         $num_chars = strlen($this->words[$i]);
 
         for ($j=0; $j<$num_chars; $j++) {
-          $this->_widths[] = $driver->stringwidth($this->words[$i]{$j}, 
+          $this->_widths[] = $driver->stringwidth($this->words[$i][$j],
                                                     $font_name, 
                                                     $this->encodings[$i], 
                                                     $font_size);
@@ -502,7 +502,7 @@ class TextBox extends SimpleInlineBox {
                                  $this->encodings[$i], 
                                  $font_size->getPoints());
       if (is_null($status)) { 
-        error_log("TextBox::show: setfont call failed");
+        log_error("TextBox::show: setfont call failed");
         return null; 
       };
         
@@ -518,7 +518,7 @@ class TextBox extends SimpleInlineBox {
                                $this->encodings[$index], 
                                $font_size->getPoints());
     if (is_null($status)) { 
-      error_log("TextBox::show: setfont call failed");
+      log_error("TextBox::show: setfont call failed");
       return null; 
     };
 
@@ -543,7 +543,7 @@ class TextBox extends SimpleInlineBox {
                                  $this->encodings[$i], 
                                  $font_size->getPoints());
       if (is_null($status)) { 
-        error_log("TextBox::show: setfont call failed");
+        log_error("TextBox::show: setfont call failed");
         return null; 
       };
 
@@ -587,7 +587,7 @@ class TextBox extends SimpleInlineBox {
                                    $this->encodings[$i], 
                                    $font_size->getPoints());
         if (is_null($status)) { 
-          error_log("TextBox::show: setfont call failed");
+          log_error("TextBox::show: setfont call failed");
           return null; 
         };
 
@@ -612,7 +612,7 @@ class TextBox extends SimpleInlineBox {
                                      $this->encodings[$i], 
                                      $font_size->getPoints());
 
-          $driver->show_xy($this->words[$i]{$j}, $left, $top);
+          $driver->show_xy($this->words[$i][$j], $left, $top);
           $left += $this->_widths[$current_char] + $letter_spacing->getPoints();
           $current_char++;
         };

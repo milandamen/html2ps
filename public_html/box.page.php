@@ -2,13 +2,13 @@
 
 class BoxPage extends GenericContainerBox {
   function BoxPageMargin() {
-    $this->GenericContainerBox();
+    parent::__construct();
   }
 
-  function &create(&$pipeline, $rules) {
-    $box =& new BoxPage();
+  static function create(&$pipeline, $rules) {
+    $box = new BoxPage();
 
-    $state =& $pipeline->get_current_css_state();
+    $state = $pipeline->get_current_css_state();
     $state->pushDefaultState();
     $rules->apply($state);
     $box->readCSS($state);
@@ -33,7 +33,7 @@ class BoxPage extends GenericContainerBox {
     return $this->get_top_margin();    
   }
 
-  function reflow(&$media) {
+  function reflowByMedia(&$media) {
     $this->put_left(mm2pt($media->margins['left']));
     $this->put_top(mm2pt($media->height() - $media->margins['top']));
     $this->put_width(mm2pt($media->real_width()));

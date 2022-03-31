@@ -3,8 +3,8 @@
 require_once(HTML2PS_DIR.'inline.content.builder.php');
 
 class InlineContentBuilderPre extends InlineContentBuilder {
-  function InlineContentBuilderPre() {
-    $this->InlineContentBuilder();
+  function __construct() {
+    parent::__construct();
   }
 
   /**
@@ -20,7 +20,7 @@ class InlineContentBuilderPre extends InlineContentBuilder {
     $text = $this->remove_trailing_linefeeds($text);
     $lines = $this->break_into_lines($text);
 
-    $parent =& $box->get_parent_node();
+    $parent = $box->get_parent_node();
 
     for ($i=0, $size = count($lines); $i<$size; $i++) {
       $line = $lines[$i];

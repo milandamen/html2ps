@@ -3,17 +3,17 @@
 class CSSFontSize extends CSSSubFieldProperty {
   var $_defaultValue;
 
-  function CSSFontSize(&$owner, $field) {
-    $this->CSSSubFieldProperty($owner, $field);
+  function __construct(&$owner, $field) {
+    parent::__construct($owner, $field);
 
     $this->_defaultValue = Value::fromData(BASE_FONT_SIZE_PT, UNIT_PT);
   }
 
-  function default_value() {
+  function default_value_m() {
     return $this->_defaultValue;
   }
 
-  function parse($value) {
+  static function parse($value) {
     if ($value == 'inherit') {
       return CSS_PROPERTY_INHERIT;
     }

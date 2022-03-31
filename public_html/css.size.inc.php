@@ -1,8 +1,8 @@
 <?php
 
 class CSSSize extends CSSPropertyHandler {
-  function CSSSize() { 
-    $this->CSSPropertyHandler(false, false); 
+  function __construct() {
+    parent::__construct(false, false);
   }
 
   function default_value() { 
@@ -21,7 +21,7 @@ class CSSSize extends CSSPropertyHandler {
       $name = $matches[1];
       $landscape = isset($matches[2]) && $matches[2] == 'landscape';
 
-      $media =& Media::predefined($name);
+      $media = Media::predefined($name);
 
       if (is_null($media)) {
         return null;

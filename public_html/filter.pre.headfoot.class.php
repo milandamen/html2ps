@@ -3,7 +3,7 @@ class PreTreeFilterHeaderFooter extends PreTreeFilter {
   var $header_html;
   var $footer_html;
 
-  function PreTreeFilterHeaderFooter($header_html, $footer_html) {
+  function __construct($header_html, $footer_html) {
     $this->header_html = null;
     $this->footer_html = null;
 
@@ -16,18 +16,18 @@ class PreTreeFilterHeaderFooter extends PreTreeFilter {
     };
   }
 
-  function process(&$tree, $data, &$pipeline) {
+  function process($tree, $data, &$pipeline) {
     $parser = new ParserXHTML();
 
     $null = null;
 
     if ($this->header_html) {
-      $box =& $parser->process($this->header_html, $pipeline, $null);
+      $box = $parser->process($this->header_html, $pipeline, $null);
       $tree->add_child($box);
     };
 
     if ($this->footer_html) {
-      $box =& $parser->process($this->footer_html, $pipeline, $null);
+      $box = $parser->process($this->footer_html, $pipeline, $null);
       $tree->add_child($box);
     };
   }

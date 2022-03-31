@@ -18,26 +18,26 @@ class RadioBox extends SimpleInlineBox {
    */
   var $_value;
 
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     $checked = $root->has_attribute('checked');
 
     $value   = $root->get_attribute('value');
     if (trim($value) == "") {
-      error_log("Radiobutton with empty 'value' attribute");
+      log_error("Radiobutton with empty 'value' attribute");
       $value = sprintf("___Value%s",md5(time().rand()));
     };
 
     $css_state = $pipeline->get_current_css_state();
 
-    $box =& new RadioBox($checked, $value,
+    $box = new RadioBox($checked, $value,
                          $css_state->get_property(CSS_HTML2PS_FORM_RADIOGROUP));
     $box->readCSS($css_state);
     return $box;
   }
 
-  function RadioBox($checked, $value, $group_name) {
+  function __construct($checked, $value, $group_name) {
     // Call parent constructor
-    $this->GenericBox();
+    parent::__construct();
 
     // Check the box state
     $this->_checked = $checked;
@@ -59,15 +59,15 @@ class RadioBox extends SimpleInlineBox {
 
   // Inherited from GenericFormattedBox
   function get_min_width(&$context) { 
-    return $this->get_full_width($context); 
+    return $this->get_full_width();
   }
   
   function get_max_width(&$context) { 
-    return $this->get_full_width($context); 
+    return $this->get_full_width();
   }
   
   function get_max_width_natural(&$context) { 
-    return $this->get_full_width($context); 
+    return $this->get_full_width();
   }
 
   function reflow(&$parent, &$context) {  

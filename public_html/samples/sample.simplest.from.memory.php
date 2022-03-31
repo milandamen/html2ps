@@ -22,7 +22,7 @@ class MyDestinationFile extends Destination {
    */
   var $_dest_filename;
 
-  function MyDestinationFile($dest_filename) {
+  function __construct($dest_filename) {
     $this->_dest_filename = $dest_filename;
   }
 
@@ -35,7 +35,7 @@ class MyFetcherMemory extends Fetcher {
   var $base_path;
   var $content;
 
-  function MyFetcherMemory($content, $base_path) {
+  function __construct($content, $base_path) {
     $this->content   = $content;
     $this->base_path = $base_path;
   }
@@ -82,7 +82,7 @@ function convert_to_pdf($html, $path_to_pdf, $base_path='') {
   $pipeline->destination = new MyDestinationFile($path_to_pdf);
 
   $baseurl = '';
-  $media =& Media::predefined('A4');
+  $media = Media::predefined('A4');
   $media->set_landscape(false);
   $media->set_margins(array('left'   => 0,
                             'right'  => 0,

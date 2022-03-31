@@ -3,14 +3,14 @@
 class CSSSubProperty extends CSSPropertyHandler {
   var $_owner;
 
-  function CSSSubProperty(&$owner) {
-    $this->_owner =& $owner;
+  function __construct(&$owner) {
+    $this->_owner = $owner;
   }
 
   function &get(&$state) {
-    $owner =& $this->owner();
-    $value =& $owner->get($state);
-    $subvalue =& $this->get_value($value);
+    $owner = $this->owner();
+    $value = $owner->get($state);
+    $subvalue = $this->get_value($value);
     return $subvalue;
   }
 
@@ -22,7 +22,7 @@ class CSSSubProperty extends CSSPropertyHandler {
     return $this->_owner; 
   }
  
-  function default_value() { 
+  static function default_value() {
   }
 
   function inherit($old_state, &$new_state) { 
@@ -32,7 +32,7 @@ class CSSSubProperty extends CSSPropertyHandler {
   }
 
   function replace_array($value, &$state_array) {
-    $owner =& $this->owner();
+    $owner = $this->owner();
 
     $owner_value = $state_array[$owner->get_property_code()];
 
@@ -50,15 +50,15 @@ class CSSSubProperty extends CSSPropertyHandler {
   }
 
   function replace($value, &$state) { 
-    $owner =& $this->owner();
+    $owner = $this->owner();
     $owner_value = $owner->get($state->getState());
 
     if (is_object($owner_value)) {
-      $owner_value =& $owner_value->copy();
+      $owner_value = $owner_value->copy();
     };
 
     if (is_object($value)) {
-      $value_copy =& $value->copy();
+      $value_copy = $value->copy();
       $this->set_value($owner_value, $value_copy);
     } else {
       $this->set_value($owner_value, $value);
@@ -72,7 +72,7 @@ class CSSSubProperty extends CSSPropertyHandler {
     error_no_method('set_value', get_class($this));
   }
 
-  function &get_value(&$owner_value) {
+  function get_value(&$owner_value) {
     error_no_method('get_value', get_class($this));
   }
 }

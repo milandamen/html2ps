@@ -6,13 +6,13 @@ class TableRowBox extends GenericContainerBox {
   var $colspans;
   var $rowspans;
 
-  function &create(&$root, &$pipeline) {
-    $box =& new TableRowBox();
+  static function create(&$root, &$pipeline) {
+    $box = new TableRowBox();
     $box->readCSS($pipeline->get_current_css_state());
 
     $child = $root->first_child();
     while ($child) {
-      $child_box =& create_pdf_box($child, $pipeline);
+      $child_box = create_pdf_box($child, $pipeline);
       $box->add_child($child_box);
 
       $child = $child->next_sibling();
@@ -27,9 +27,9 @@ class TableRowBox extends GenericContainerBox {
     };
   }
 
-  function TableRowBox() {
+  function __construct() {
     // Call parent constructor
-    $this->GenericContainerBox();
+    parent::__construct();
   }
 
   // Normalize colspans by adding fake cells after the "colspanned" cell
@@ -51,15 +51,15 @@ class TableRowBox extends GenericContainerBox {
   }
 
   function add_fake_cell_after($index, &$pipeline) {
-    array_splice($this->content, $index+1, 0, array(FakeTableCellBox::create($pipeline)));
+    array_splice($this->content, $index+1, 0, array(FakeTableCellBox::createFake($pipeline)));
   }
 
   function add_fake_cell_before($index, &$pipeline) {
-    array_splice($this->content, $index, 0, array(FakeTableCellBox::create($pipeline)));
+    array_splice($this->content, $index, 0, array(FakeTableCellBox::createFake($pipeline)));
   }
 
   function append_fake_cell(&$pipeline) {
-    $this->content[] = FakeTableCellBox::create($pipeline);
+    $this->content[] = FakeTableCellBox::createFake($pipeline);
   }
 
   // Table specific
@@ -72,7 +72,7 @@ class TableRowBox extends GenericContainerBox {
 
     // Process cells contained in current row
     for ($i=0, $size = count($this->content); $i<$size; $i++) {
-      $cell =& $this->content[$i];
+      $cell = $this->content[$i];
 
       // Offset cell if needed
       $cell->offset(0, 
@@ -200,7 +200,7 @@ class TableRowBox extends GenericContainerBox {
        * their show method is called explicitly; the similar check should be performed there
        */
       
-      $cell =& $this->content[$i];
+      $cell = $this->content[$i];
       $visibility = $cell->get_css_property(CSS_VISIBILITY);
 
       if ($visibility === VISIBILITY_VISIBLE) {

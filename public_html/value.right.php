@@ -3,12 +3,14 @@
 require_once(HTML2PS_DIR.'value.generic.percentage.php');
 
 class ValueRight extends CSSValuePercentage {
-  function fromString($value) {
-    return CSSValuePercentage::_fromString($value, new ValueRight);
+  static function fromString($value) {
+    $valueRight = new ValueRight();
+    return CSSValuePercentage::_fromString($value, $valueRight);
   }
 
   function &copy() {
-    $value =& parent::_copy(new ValueRight);
+    $valueRight = new ValueRight();
+    $value = parent::_copy($valueRight);
     return $value;
   }
 }

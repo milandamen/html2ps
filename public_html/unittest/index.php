@@ -15,7 +15,7 @@ require_once(HTML2PS_DIR.'pipeline.factory.class.php');
 require_once('fetcher.memory.php');
 require_once('generic.test.php');
 
-$test = &new GroupTest('All tests');
+$test = new GroupTest('All tests');
 $testfiles = glob('test.*.php');
 foreach ($testfiles as $testfile) {
 //  $test->addTestFile($testfile);

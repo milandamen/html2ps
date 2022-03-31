@@ -22,8 +22,8 @@ class BRBox extends GenericBox {
   /**
    * Create new BR element
    */
-  function BRBox() {
-    $this->GenericBox();
+  function __construct() {
+    parent::__construct();
   }
 
   function apply_clear($y, &$context) {
@@ -56,8 +56,8 @@ class BRBox extends GenericBox {
    * 
    * @return BRBox new BR element object
    */
-  function &create(&$pipeline) {
-    $box =& new BRBox();
+  static function create(&$pipeline) {
+    $box = new BRBox();
     $box->readCSS($pipeline->get_current_css_state());
     return $box;
   }

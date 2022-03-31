@@ -5,12 +5,12 @@ require_once(HTML2PS_DIR.'value.margin.class.php');
 class CSSMargin extends CSSPropertyHandler {
   var $default_value;
 
-  function CSSMargin() { 
+  function __construct() {
     $this->default_value = $this->parse("0");
-    $this->CSSPropertyHandler(false, false); 
+    parent::__construct(false, false);
   }
 
-  function default_value() { 
+  function default_value_m() {
     return $this->default_value->copy(); 
   }
 

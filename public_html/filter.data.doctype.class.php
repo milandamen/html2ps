@@ -1,6 +1,6 @@
 <?php
 class DataFilterDoctype extends DataFilter {
-  function DataFilterDoctype() { }
+  function __construct() { }
 
   function process(&$data) {
     $html = $data->get_content();
@@ -9,7 +9,7 @@ class DataFilterDoctype extends DataFilter {
     $doctype         = "<!DOCTYPE.*?>";
 
     /**
-     * DOCTYPE declaration should be at the very beginning of the document 
+     * DOCTYPE declaration should be at the very beginning of the document
      * (with the only exception of XML declaration).
      *
      * XML declaration is optional; XML declaration may be surrounded with whitespace
@@ -17,10 +17,10 @@ class DataFilterDoctype extends DataFilter {
 
     if (preg_match("#^(?:\s*$xml_declaration\s*)?($doctype)#", $html, $matches)) {
       $doctype_match = $matches[1];
-      
+
       /**
        * remove extra spaces from doctype text; also, DOCTYPE may contain
-       * \n and \r character in its whitespace parts. Here, we replace them 
+       * \n and \r character in its whitespace parts. Here, we replace them
        * with one single space, converting it to the "normalized" form.
        */
       $doctype_match = preg_replace("/\s+/"," ",$doctype_match);
@@ -41,7 +41,7 @@ class DataFilterDoctype extends DataFilter {
         $GLOBALS['g_config']['mode'] = 'xhtml';
         return $data;
       };
-      
+
     };
 
     /**

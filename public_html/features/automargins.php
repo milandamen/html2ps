@@ -4,15 +4,15 @@ class FeatureAutomargins {
   var $_top_margin;
   var $_bottom_margin;
 
-  function FeatureAutomargins() {
+  function __construct() {
     $this->_top_margin = 0;
     $this->_bottom_margin = 0;
   }
 
   function handle_before_page_heights($params) {
-    $pipeline =& $params['pipeline'];
-    $document =& $params['document'];
-    $media =& $params['media'];
+    $pipeline = $params['pipeline'];
+    $document = $params['document'];
+    $media = $params['media'];
 
     $boxes = $pipeline->reflow_margin_boxes(0, $media);
 
@@ -37,7 +37,7 @@ class FeatureAutomargins {
   }
 
   function install(&$pipeline, $params) {
-    $dispatcher =& $pipeline->get_dispatcher();
+    $dispatcher = $pipeline->get_dispatcher();
     $dispatcher->add_observer('before-page-heights', array(&$this, 'handle_before_page_heights'));
   }
 }

@@ -2,11 +2,11 @@
 // $Header: /cvsroot/html2ps/treebuilder.class.php,v 1.17 2007/05/06 18:49:29 Konstantin Exp $
 
 if (!defined('XML_ELEMENT_NODE')) { define('XML_ELEMENT_NODE',1); };
-if (!defined('XML_TEXT_NODE')) { define('XML_TEXT_NODE',2); };
-if (!defined('XML_DOCUMENT_NODE')) { define('XML_DOCUMENT_NODE',3); };
+if (!defined('XML_TEXT_NODE')) { define('XML_TEXT_NODE',3); };
+if (!defined('XML_DOCUMENT_NODE')) { define('XML_DOCUMENT_NODE',9); };
 
 class TreeBuilder { 
-  function build($xmlstring) {
+  static function build($xmlstring) {
     if (empty($xmlstring)) {
       trigger_error("Can not buid tree with empty xml", E_USER_ERROR);
     }
@@ -22,7 +22,9 @@ class TreeBuilder {
 
     if (class_exists('DOMDocument')) { 
       require_once(HTML2PS_DIR.'dom.php5.inc.php');
-      return DOMTree::from_DOMDocument(DOMDocument::loadXML($xmlstring)); 
+      $doc = new \DOMDocument();
+      $doc->loadXML($xmlstring);
+      return DOMTree::from_DOMDocument($doc);
     };
 
     require_once(HTML2PS_DIR.'dom.activelink.inc.php');

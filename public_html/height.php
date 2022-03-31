@@ -133,7 +133,7 @@ class HCConstraint {
     }
   }
 
-  function &create(&$box) {   
+  static function create(&$box) {
     // Determine if there's constant restriction
     $value = $box->get_css_property(CSS_HEIGHT);
 
@@ -165,7 +165,7 @@ class HCConstraint {
       $max = array($value->getPoints(), false);
     };
 
-    $constraint =& new HCConstraint($constant, $min, $max);
+    $constraint = new HCConstraint($constant, $min, $max);
     return $constraint;
   }
 
@@ -175,7 +175,7 @@ class HCConstraint {
   // @param $min value of minimal box height or null if none
   // @param $max value of maximal box height or null if none
   //
-  function HCConstraint($constant, $min, $max) {
+  function __construct($constant, $min, $max) {
     $this->constant = $constant;
     $this->min = $min;
     $this->max = $max;

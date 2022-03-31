@@ -738,11 +738,11 @@ array(UC_LINE_BREAK_OP => array(UC_LINE_BREAK_OP => LB_PROHIBITED,
  * See CSS 2.1 16.6.1 The 'white-space' processing model
  */
 class InlineContentBuilder {
-  function InlineContentBuilder() {
+  function __construct() {
   }
 
   function add_line_break(&$box, &$pipeline) {
-    $break_box =& new BRBox();
+    $break_box = new BRBox();
     $break_box->readCSS($pipeline->get_current_css_state());
     $box->add_child($break_box);
   }

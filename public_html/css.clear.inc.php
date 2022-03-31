@@ -7,8 +7,8 @@ define('CLEAR_RIGHT',2);
 define('CLEAR_BOTH',3);
 
 class CSSClear extends CSSPropertyStringSet {
-  function CSSClear() { 
-    $this->CSSPropertyStringSet(false, 
+  function __construct() {
+    parent::__construct(false,
                                 false,
                                 array('inherit' => CSS_PROPERTY_INHERIT,
                                       'left'    => CLEAR_LEFT,

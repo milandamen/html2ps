@@ -12,10 +12,10 @@ class LineBox {
   var $bottom;
   var $left;
 
-  function LineBox() { }
+  function __construct() { }
 
   function &copy() {
-    $box =& new LineBox;
+    $box = new LineBox;
     $box->top    = $this->top;
     $box->right  = $this->right;
     $box->bottom = $this->bottom;
@@ -30,7 +30,7 @@ class LineBox {
     $this->right  += $dx;
   }
 
-  function create(&$box) {
+  static function create(&$box) {
     $lbox = new LineBox;
     $lbox->top    = $box->get_top();
     $lbox->right  = $box->get_right();
@@ -82,33 +82,33 @@ class LineBox {
 class InlineBox extends GenericInlineBox {
   var $_lines;
 
-  function InlineBox() {
+  function __construct() {
     // Call parent's constructor
-    $this->GenericInlineBox();
+    parent::__construct();
 
     // Clear the list of line boxes inside this box
     $this->_lines = array();
   }
 
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     // Create contents of this inline box
     if ($root->node_type() == XML_TEXT_NODE) {
-      $css_state =& $pipeline->get_current_css_state();
+      $css_state = $pipeline->get_current_css_state();
       $box = InlineBox::create_from_text($root->content, 
                                          $css_state->get_property(CSS_WHITE_SPACE), 
                                          $pipeline);
       return $box;
     } else {
-      $box =& new InlineBox();
+      $box = new InlineBox();
 
-      $css_state =& $pipeline->get_current_css_state();
+      $css_state = $pipeline->get_current_css_state();
 
       $box->readCSS($css_state);
 
       // Initialize content
       $child = $root->first_child();
       while ($child) {
-        $child_box =& create_pdf_box($child, $pipeline);
+        $child_box = create_pdf_box($child, $pipeline);
         $box->add_child($child_box);
         $child = $child->next_sibling();
       };
@@ -121,7 +121,7 @@ class InlineBox extends GenericInlineBox {
         $css_state->pushState();
         $css_state->set_property(CSS_FONT_SIZE, Value::fromData(0.01, UNIT_PT));
 
-        $whitespace = WhitespaceBox::create($pipeline);
+        $whitespace = WhitespaceBox::createWithPipeline($pipeline);
         $whitespace->readCSS($css_state);
 
         $box->add_child($whitespace);        
@@ -133,16 +133,16 @@ class InlineBox extends GenericInlineBox {
     return $box;
   }
 
-  function &create_from_text($text, $white_space, &$pipeline) {
-    $box =& new InlineBox();
+  static function create_from_text($text, $white_space, &$pipeline) {
+    $box = new InlineBox();
     $box->readCSS($pipeline->get_current_css_state());
 
     // Apply/inherit text-related CSS properties 
-    $css_state =& $pipeline->get_current_css_state();
+    $css_state = $pipeline->get_current_css_state();
     $css_state->pushDefaultTextState();
 
     require_once(HTML2PS_DIR.'inline.content.builder.factory.php');
-    $inline_content_builder =& InlineContentBuilderFactory::get($white_space);
+    $inline_content_builder = InlineContentBuilderFactory::get($white_space);
     $inline_content_builder->build($box, $text, $pipeline);
     
     // Clear the CSS stack
@@ -152,7 +152,7 @@ class InlineBox extends GenericInlineBox {
   }
 
   function &get_line_box($index) {
-    $line_box =& $this->_lines[$index];
+    $line_box = $this->_lines[$index];
     return $line_box;
   }
 
@@ -172,8 +172,8 @@ class InlineBox extends GenericInlineBox {
     $hyphens  = array();
     $encoding = 'iso-8859-1';
 
-    $manager_encoding =& ManagerEncoding::get();
-    $text_box =& TextBox::create_empty($pipeline);
+    $manager_encoding = ManagerEncoding::get();
+    $text_box = TextBox::create_empty($pipeline);
 
     $len = strlen($raw_content);
     while ($ptr < $len) {
@@ -224,9 +224,8 @@ class InlineBox extends GenericInlineBox {
             };
             
             reset($mapping);
-            list($encoding, $add) = each($mapping);
-            
-            $word = $mapping[$encoding];
+
+            $word = $mapping[array_keys($mapping)[0]];
             $hyphens = array();
           };
         };
@@ -365,7 +364,7 @@ class InlineBox extends GenericInlineBox {
     // Reflow contents
     $size = count($this->content);
     for ($i=0; $i<$size; $i++) {
-      $child =& $this->content[$i];
+      $child = $this->content[$i];
 
       // Add current element into _parent_ line box and reflow it
       $child->reflow($parent, $context);
@@ -398,7 +397,7 @@ class InlineBox extends GenericInlineBox {
 
     $size = count($this->content);
     for ($i=0; $i<$size; $i++) {
-      $child =& $this->content[$i];
+      $child = $this->content[$i];
       $child->reflow_inline();
 
       if (!$child->is_null()) {
@@ -424,7 +423,7 @@ class InlineBox extends GenericInlineBox {
 
     $size = count($this->content);
     for ($i=0; $i<$size; $i++) {
-      $child =& $this->content[$i];
+      $child = $this->content[$i];
       $child->reflow_whitespace($linebox_started, $previous_whitespace);      
     };
 
@@ -445,7 +444,7 @@ class InlineBox extends GenericInlineBox {
    * As "nowrap" properties applied to block-level boxes only, we may use simplified version of
    * 'get_min_width' here
    */
-  function get_min_width(&$context) {
+  function get_min_width(&$context, $limit=10E6) {
     if (isset($this->_cache[CACHE_MIN_WIDTH])) {
       return $this->_cache[CACHE_MIN_WIDTH];
     }

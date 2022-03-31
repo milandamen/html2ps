@@ -5,7 +5,7 @@
  */
 
 class PreTreeFilterHeightConstraint extends PreTreeFilter {
-  function process(&$tree, $data, &$pipeline) {
+  function process($tree, $data, &$pipeline) {
     if (!is_a($tree, 'GenericFormattedBox')) {
       return;
     };

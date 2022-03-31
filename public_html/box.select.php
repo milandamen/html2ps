@@ -6,16 +6,16 @@ class SelectBox extends InlineControlBox {
   var $_value;
   var $_options;
 
-  function SelectBox($name, $value, $options) {
+  function __construct($name, $value, $options) {
     // Call parent constructor
-    $this->InlineBox();
+    parent::__construct();
 
     $this->_name    = $name;
     $this->_value   = $value;
     $this->_options = $options;
   }
 
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     $name = $root->get_attribute('name');
 
     $value = '';
@@ -45,7 +45,7 @@ class SelectBox extends InlineControlBox {
     };
     $content = str_pad($content, $size*SIZE_SPACE_KOEFF + SELECT_SPACE_PADDING, ' ');
 
-    $box =& new SelectBox($name, $value, $options);
+    $box = new SelectBox($name, $value, $options);
     $box->readCSS($pipeline->get_current_css_state());
     $box->setup_content($content, $pipeline);
 

@@ -103,7 +103,7 @@ class FetcherUrl extends Fetcher {
 
   // FetcherURL - constructor
 
-  function FetcherURL() {
+  function __construct() {
     $this->_connections = array();
 
     $this->error_message = "";
@@ -143,7 +143,7 @@ class FetcherUrl extends Fetcher {
                          $this->port,
                          $errno,
                          $errstr);
-      error_log($message);
+      log_error($message);
       $this->error_message = $message;
       return null;
     };
@@ -163,7 +163,7 @@ class FetcherUrl extends Fetcher {
       $message = sprintf("Cannot connect to %s:%d. SSL Extension missing", 
                          $this->host, 
                          $this->port);
-      error_log($message);
+      log_error($message);
       $this->error_message .= $message;
       return null;
     };
@@ -176,7 +176,7 @@ class FetcherUrl extends Fetcher {
                          $this->port,
                          $errno,
                          $errstr);
-      error_log($message);
+      log_error($message);
       $this->error_message = $message;
       return null;
     };
@@ -204,7 +204,7 @@ class FetcherUrl extends Fetcher {
     if (substr($location, 0, 7) == "http://") { return $location; };
     if (substr($location, 0, 8) == "https://") { return $location; };
 
-    if ($location{0} == "/") {
+    if ($location[0] == "/") {
       return $this->protocol."://".$this->host.$location;
     };
 
@@ -217,7 +217,7 @@ class FetcherUrl extends Fetcher {
   * 
   * @param $path - url path expected, during big code base, from some part urls is passed.
   */
-  function _simplify_path($path) {
+  static function _simplify_path($path) {
     $simplified_path = $path;
     $parsed_path = parse_url($path);
     $prepared_path = $parsed_path['path'];
@@ -270,7 +270,7 @@ class FetcherUrl extends Fetcher {
      * for example, invalid image or CSS reference)
      */
     if ($parts == false) {
-      error_log(sprintf("The URL '%s' could not be parsed", $this->url));
+      log_error(sprintf("The URL '%s' could not be parsed", $this->url));
 
       $this->content = '';
       $this->code = HTTP_OK;
@@ -308,7 +308,7 @@ class FetcherUrl extends Fetcher {
       return $this->fetch_file();
     default:
       $message = sprintf("Unsupported protocol: %s", $this->protocol);
-      error_log($message);
+      log_error($message);
       $this->error_message .= $message;
       return null;
     }
@@ -342,7 +342,7 @@ class FetcherUrl extends Fetcher {
   function fetch_file() {
     if (PHP_OS == "WINNT") {
       $path = substr($this->url, 7);
-      if ($path{0} == "/") { $path = substr($path, 1); };
+      if ($path[0] == "/") { $path = substr($path, 1); };
     } else {
       $path = substr($this->url, 7);
     };
@@ -350,7 +350,7 @@ class FetcherUrl extends Fetcher {
     $normalized_path = realpath(urldecode($path));
     $normalized_path_part = substr($normalized_path, 0, strlen(FILE_PROTOCOL_RESTRICT));
     if ($normalized_path_part !== FILE_PROTOCOL_RESTRICT) {
-      error_log(sprintf("Access denied to file '%s'", $normalized_path));
+      log_error(sprintf("Access denied to file '%s'", $normalized_path));
 
       $this->content = "";
       $this->code = HTTP_OK;
@@ -460,7 +460,7 @@ class FetcherUrl extends Fetcher {
       $this->redirects++;
       if ($this->redirects > MAX_REDIRECTS) { return false; };
       preg_match('/Location: ([\S]+)/i',$res,$matches);
-      error_log('Redirected to:'.$matches[1]);
+      log_info('Redirected to:'.$matches[1]);
 
       return $this->fetch($this->_fix_location($matches[1]));
     case '400': // Bad request
@@ -470,7 +470,7 @@ class FetcherUrl extends Fetcher {
     case '404': // Not found - but should return some html content - error page
     case '406': // Not acceptable
       if (!preg_match('/(.*?)\r\n\r\n(.*)/s',$res,$matches)) {
-        error_log("Unrecognized HTTP response");
+        log_error("Unrecognized HTTP response");
         return false;
       };
       $this->headers = $matches[1];
@@ -485,7 +485,7 @@ class FetcherUrl extends Fetcher {
         return $this->_process_code($res, true);
       } else {
         if (!preg_match('/(.*?)\r\n\r\n(.*)/s',$res,$matches)) {
-          error_log("Unrecognized HTTP response");
+          log_error("Unrecognized HTTP response");
           return false;
         };
         $this->headers = $matches[1];
@@ -493,7 +493,7 @@ class FetcherUrl extends Fetcher {
         return true;
       };
     default:
-      error_log("Unrecognized HTTP result code:".$this->code);
+      log_error("Unrecognized HTTP result code:".$this->code);
       return false;
     };
   }

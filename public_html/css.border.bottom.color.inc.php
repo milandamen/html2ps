@@ -2,8 +2,8 @@
 // $Header: /cvsroot/html2ps/css.border.bottom.color.inc.php,v 1.2 2006/11/16 03:32:56 Konstantin Exp $
 
 class CSSBorderBottomColor extends CSSSubProperty {
-  function CSSBorderBottomColor(&$owner) {
-    $this->CSSSubProperty($owner);
+  function __construct(&$owner) {
+    parent::__construct($owner);
   }
 
   function set_value(&$owner_value, &$value) {

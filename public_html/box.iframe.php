@@ -2,24 +2,24 @@
 // $Header: /cvsroot/html2ps/box.iframe.php,v 1.14 2006/12/18 19:44:21 Konstantin Exp $
 
 class IFrameBox extends InlineBlockBox {
-  function &create(&$root, &$pipeline) {
-    $box =& new IFrameBox($root, $pipeline);
+  static function create(&$root, &$pipeline) {
+    $box = new IFrameBox($root, $pipeline);
     $box->readCSS($pipeline->get_current_css_state());
     return $box;
   }
 
   // Note that IFRAME width is NOT determined by its content, thus we need to override 'get_min_width' and
   // 'get_max_width'; they should return the constrained frame width.
-  function get_min_width(&$context) { 
+  function get_min_width(&$context, $limit=10E6) {
     return $this->get_max_width($context);
   } 
 
-  function get_max_width(&$context) {
+  function get_max_width(&$context, $limit=10E6) {
     return $this->get_width();
   }
 
-  function IFrameBox(&$root, $pipeline) {
-    $this->InlineBlockBox();
+  function __construct(&$root, $pipeline) {
+    parent::__construct();
 
     // If NO src attribute specified, just return.
     if (!$root->has_attribute('src') || 
@@ -58,11 +58,11 @@ class IFrameBox extends InlineBlockBox {
     // Save current stylesheet, as each frame may load its own stylesheets
     //
     $pipeline->push_css();
-    $css =& $pipeline->get_current_css();
+    $css = $pipeline->get_current_css();
     $css->scan_styles($tree, $pipeline);
 
     $frame_root = traverse_dom_tree_pdf($tree);
-    $box_child =& create_pdf_box($frame_root, $pipeline);
+    $box_child = create_pdf_box($frame_root, $pipeline);
     $this->add_child($box_child);
 
     // Restore old stylesheet

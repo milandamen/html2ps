@@ -3,12 +3,14 @@
 require_once(HTML2PS_DIR.'value.generic.percentage.php');
 
 class ValueHeight extends CSSValuePercentage {
-  function fromString($value) {
-    return CSSValuePercentage::_fromString($value, new ValueHeight);
+  static function fromString($value) {
+    $valueHeight = new ValueHeight();
+    return CSSValuePercentage::_fromString($value, $valueHeight);
   }
 
   function &copy() {
-    $value =& parent::_copy(new ValueHeight);
+    $valueHeight = new ValueHeight();
+    $value = parent::_copy($valueHeight);
     return $value;
   }
 }

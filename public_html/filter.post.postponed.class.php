@@ -3,11 +3,11 @@
 class PostTreeFilterPostponed extends PreTreeFilter {
   var $_driver;
 
-  function PostTreeFilterPostponed(&$driver) {
-    $this->_driver  =& $driver;
+  function __construct(&$driver) {
+    $this->_driver  = $driver;
   }
 
-  function process(&$tree, $data, &$pipeline) {
+  function process($tree, $data, &$pipeline) {
     if (is_a($tree, 'GenericContainerBox')) {
       for ($i=0; $i<count($tree->content); $i++) {
         $position = $tree->content[$i]->get_css_property(CSS_POSITION);

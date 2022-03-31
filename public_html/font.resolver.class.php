@@ -16,12 +16,12 @@ class FontResolver {
   var $ps_fonts = array();
   var $ps_fonts_counter = 1;
 
-  function FontResolver() {
+  function __construct() {
   }
 
   function setup_ttf_mappings($pdf) {
     foreach ($this->ttf_mappings as $typeface => $file) {
-      pdf_set_parameter($pdf, "FontOutline", $typeface."=".TTF_FONTS_REPOSITORY.$file); 
+      pdf_set_parameter($pdf, "FontOutline", $typeface."=".TTF_FONTS_REPOSITORY.$file);
     };
   }
 
@@ -35,7 +35,7 @@ class FontResolver {
   }
 
   function font_resolved($family, $weight, $style, $encoding) {
-    return 
+    return
       isset($this->ps_fonts[$family]) and
       isset($this->ps_fonts[$family][$weight]) and
       isset($this->ps_fonts[$family][$weight][$style]) and
@@ -44,7 +44,7 @@ class FontResolver {
 
   function get_afm_mapping($typeface) {
     return (isset($this->afm_mappings[$typeface]) ?
-            $this->afm_mappings[$typeface] : 
+            $this->afm_mappings[$typeface] :
             "");
   }
 
@@ -55,7 +55,7 @@ class FontResolver {
     };
     return $this->ps_fonts[$family][$weight][$style][$encoding];
   }
-  
+
   function add_family_normal_encoding_override($family, $encoding, $normal, $italic, $oblique) {
     $this->overrides[$encoding][$family][WEIGHT_NORMAL][FS_NORMAL]  = $normal;
     $this->overrides[$encoding][$family][WEIGHT_NORMAL][FS_ITALIC]  = $italic;
@@ -114,8 +114,8 @@ class FontResolver {
       return $this->overrides[$encoding][$family][$weight][$style];
     };
 
-    if (isset($this->overrides_mask[$family]) && 
-        isset($this->overrides_mask[$family][$weight]) && 
+    if (isset($this->overrides_mask[$family]) &&
+        isset($this->overrides_mask[$family][$weight]) &&
         isset($this->overrides_mask[$family][$weight][$style])) {
       foreach ($this->overrides_mask[$family][$weight][$style] as $override) {
         if (preg_match($override['mask'], $encoding)) {
@@ -171,12 +171,12 @@ class FontResolver {
     return $this->families[$family][$weight][$style];
   }
 
-  function have_alias($family) { 
-    return isset($this->aliases[$family]); 
+  function have_alias($family) {
+    return isset($this->aliases[$family]);
   }
 
-  function have_font_family($family) { 
-    return isset($this->families[$family]) or $this->have_alias($family); 
+  function have_font_family($family) {
+    return isset($this->families[$family]) or $this->have_alias($family);
   }
 }
 

@@ -1,7 +1,7 @@
 <?php
 class GenericInlineBox extends GenericContainerBox {
-  function GenericInlineBox() {
-    $this->GenericContainerBox();
+  function __construct() {
+    parent::__construct();
   }
 
   // @todo this code is duplicated in box.block.php
@@ -92,19 +92,19 @@ class GenericInlineBox extends GenericContainerBox {
   }
 
   function get_ascender() {
-    $first =& $this->get_first();
+    $first = $this->get_first();
     if (is_null($first)) { return 0; };
     return $first->get_ascender();
   }
 
   function get_baseline() {
-    $first =& $this->get_first();
+    $first = $this->get_first();
     if (is_null($first)) { return 0; };
     return $first->get_baseline();
   }
 
   function get_descender() {
-    $first =& $this->get_first();
+    $first = $this->get_first();
     if (is_null($first)) { return 0; };
     return $first->get_descender();
   }

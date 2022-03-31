@@ -5,7 +5,7 @@ class FetcherMemory extends Fetcher {
   var $base_url;
   var $content;
 
-  function FetcherMemory($content, $base_path) {
+  function __construct($content, $base_path) {
     $this->content   = $content;
     $this->base_path = $base_path;
     $this->base_url  = $base_path;
@@ -21,7 +21,7 @@ class FetcherMemory extends Fetcher {
       return $null;
     };
 
-    $data =& new FetchedDataFile($this->content, $this->base_path);
+    $data = new FetchedDataFile($this->content, $this->base_path);
     return $data;
   }
 

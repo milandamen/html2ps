@@ -1,16 +1,16 @@
 <?php
 
 class CSSPseudoLinkTarget extends CSSPropertyHandler {
-  function CSSPseudoLinkTarget() { $this->CSSPropertyHandler(true, true); }
+  function __construct() { parent::__construct(true, true); }
 
   function default_value() { return ""; }
 
-  function is_external_link($value) {
-    return (strlen($value) > 0 && $value{0} != "#");
+  static function is_external_link($value) {
+    return (strlen($value) > 0 && $value[0] != "#");
   }
 
-  function is_local_link($value) {
-    return (strlen($value) > 0 && $value{0} == "#");
+  static function is_local_link($value) {
+    return (strlen($value) > 0 && $value[0] == "#");
   }
 
   function parse($value, &$pipeline) { 

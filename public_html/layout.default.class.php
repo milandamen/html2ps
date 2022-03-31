@@ -6,7 +6,7 @@ class LayoutEngineDefault extends LayoutEngine {
   function process(&$box, &$media, &$driver, &$context) {
     // Calculate the size of text boxes
     if (is_null($box->reflow_text($driver))) {
-      error_log("LayoutEngineDefault::process: reflow_text call failed");
+      log_error("LayoutEngineDefault::process: reflow_text call failed");
       return null;
     };
 

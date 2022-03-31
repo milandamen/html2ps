@@ -9,24 +9,74 @@
  *
  * @link http://www.w3.org/TR/CSS21/visuren.html#value-def-inline-block CSS 2.1 description of 'display: inline-block'
  */
-class InlineBlockBox extends GenericInlineBox {
+class InlineBlockBox extends GenericContainerBox {
   /**
    * Create new 'inline-block' element; add content from the parsed HTML tree automatically.
    *
    * @see InlineBlockBox::InlineBlockBox()
    * @see GenericContainerBox::create_content()
    */
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     $box = new InlineBlockBox();
     $box->readCSS($pipeline->get_current_css_state());
     $box->create_content($root, $pipeline);
     return $box;
   }
 
-  function InlineBlockBox() {
-    $this->GenericInlineBox();
+  function __construct() {
+    parent::__construct();
   }
 
+  /**
+   * Layout current inline-block element
+   *
+   * @param GenericContainerBox $parent The document element which should be treated as the parent of current element
+   * @param FlowContext $context The flow context containing the additional layout data
+   *
+   * @see FlowContext
+   * @see GenericContainerBox
+   * @see BlockBox::reflow
+   *
+   * @todo this 'reflow' skeleton is common for all element types; thus, we probably should move the generic 'reflow'
+   * definition to the GenericFormattedBox class, leaving only box-specific 'reflow_static' definitions in specific classes.
+   *
+   * @todo make relative positioning more CSS 2.1 compliant; currently, 'bottom' and 'right' CSS properties are ignored.
+   *
+   * @todo check whether percentage values should be really ignored during relative positioning
+   */
+  function reflow(&$parent, &$context) {
+    /**
+     * Note that we may not worry about 'position: absolute' and 'position: fixed',
+     * as, according to CSS 2.1 paragraph 9.7, these values of 'position'
+     * will cause 'display' value to change to either 'block' or 'table'. Thus,
+     * 'inline-block' boxes will never have 'position' value other than 'static' or 'relative'
+     *
+     * @link http://www.w3.org/TR/CSS21/visuren.html#dis-pos-flo CSS 2.1: Relationships between 'display', 'position', and 'float'
+     */
+
+    switch ($this->get_css_property(CSS_POSITION)) {
+    case POSITION_STATIC:
+      return $this->reflow_static($parent, $context);
+
+    case POSITION_RELATIVE:
+      /**
+       * CSS 2.1:
+       * Once a box has been laid out according to the normal flow or floated, it may be shifted relative
+       * to this position. This is called relative positioning. Offsetting a box (B1) in this way has no
+       * effect on the box (B2) that follows: B2 is given a position as if B1 were not offset and B2 is
+       * not re-positioned after B1's offset is applied. This implies that relative positioning may cause boxes
+       * to overlap. However, if relative positioning causes an 'overflow:auto' box to have overflow, the UA must
+       * allow the user to access this content, which, through the creation of scrollbars, may affect layout.
+       *
+       * @link http://www.w3.org/TR/CSS21/visuren.html#x28 CSS 2.1 Relative positioning
+       */
+
+      $this->reflow_static($parent, $context);
+      $this->offsetRelative();
+
+      return;
+    }
+  }
 
   /**
    * Layout current 'inline-block' element assument it has 'position: static'
@@ -44,9 +94,6 @@ class InlineBlockBox extends GenericInlineBox {
    */
   function reflow_static(&$parent, &$context) {
     GenericFormattedBox::reflow($parent, $context);
-
-    // Check if we need a line break here
-    $this->maybe_line_break($parent, $context);
 
     /**
      * Calculate margin values if they have been set as a percentage

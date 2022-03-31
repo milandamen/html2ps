@@ -15,9 +15,9 @@ class CSSBackgroundRepeat extends CSSSubFieldProperty {
     return 'background-repeat';
   }
 
-  function default_value() { return BR_REPEAT; }
+  static function default_value() { return BR_REPEAT; }
 
-  function parse($value) {
+  static function parse($value) {
     if ($value === 'inherit') {
       return CSS_PROPERTY_INHERIT;
     }

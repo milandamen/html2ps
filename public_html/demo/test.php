@@ -8,7 +8,7 @@ function convert_to_pdf($pdf) {
 	class MyDestinationFile extends Destination {
 		var $_dest_filename;
 
-		function MyDestinationFile($dest_filename) {
+		function __construct($dest_filename) {
 			$this->_dest_filename = $dest_filename;
 		}
 
@@ -19,8 +19,8 @@ function convert_to_pdf($pdf) {
 
 
 	class MyDestinationDownload extends DestinationHTTP {
-		function MyDestinationDownload($filename) {
-			$this->DestinationHTTP($filename);
+		function __construct($filename) {
+			parent::__construct($filename);
 			$GLOBALS['PDFOutFileName'] = $filename;
 		}
 
@@ -37,7 +37,7 @@ function convert_to_pdf($pdf) {
 	class MyFetcherLocalFile extends Fetcher {
 	var $_content;
 
-		function MyFetcherLocalFile() {
+		function __construct() {
 			$this->_content = "Test<!--NewPage-->Test<pagebreak/>Test<?page-break>Test";
 		}
 

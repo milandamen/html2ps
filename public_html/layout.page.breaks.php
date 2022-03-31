@@ -11,7 +11,7 @@ class FootnoteLocation {
   var $_location;
   var $_content_height;
 
-  function FootnoteLocation($location, $content_height) {
+  function __construct($location, $content_height) {
     $this->_location       = $location;
     $this->_content_height = $content_height;
   }
@@ -34,7 +34,7 @@ class PageBreakLocation {
   var $location;
   var $penalty;
 
-  function PageBreakLocation($location, $penalty) {
+  function __construct($location, $penalty) {
     $this->location = round($location,2);
     $this->penalty  = $penalty;
   }
@@ -129,7 +129,7 @@ class PageBreakLocation {
  * 2. Between line boxes inside a block box. 
  */
 class PageBreakLocator {
-  function get_break_locations(&$dom_tree) {
+  static function get_break_locations(&$dom_tree) {
     $locations_ungrouped = PageBreakLocator::get_pages_traverse($dom_tree, 0);
 
     /**
@@ -143,7 +143,7 @@ class PageBreakLocator {
     return PageBreakLocator::sort_locations($locations_ungrouped);
   }
 
-  function get_footnotes_traverse(&$box) {
+  static function get_footnotes_traverse(&$box) {
     $footnotes = array();
 
     if (is_a($box, 'BoxNoteCall')) {
@@ -157,7 +157,7 @@ class PageBreakLocator {
     return $footnotes;
   }
 
-  function get_pages(&$dom_tree, $max_page_height, $first_page_top) {
+  static function get_pages(&$dom_tree, $max_page_height, $first_page_top) {
     $current_page_top = $first_page_top;
     $heights = array();
 
@@ -190,7 +190,7 @@ class PageBreakLocator {
 
           $best_location_penalty = $best_location->get_penalty($current_page_top, $max_page_height, $footnotes);
           if ($best_location_penalty >= MAX_PAGE_BREAK_PENALTY) {
-            error_log('Could not find good page break location');
+            log_warning('Could not find good page break location');
             $heights[] = $max_page_height;
             $current_page_top -= $max_page_height;
             $best_location = null;
@@ -226,22 +226,22 @@ class PageBreakLocator {
     return $heights;
   }
 
-  function is_forced_page_break($value) {
+  static function is_forced_page_break($value) {
     return
       $value == PAGE_BREAK_ALWAYS ||
       $value == PAGE_BREAK_LEFT ||
       $value == PAGE_BREAK_RIGHT;
   }
 
-  function has_forced_page_break_before(&$box) {
+  static function has_forced_page_break_before(&$box) {
     return PageBreakLocator::is_forced_page_break($box->get_css_property(CSS_PAGE_BREAK_BEFORE));
   }
 
-  function has_forced_page_break_after(&$box) {
+  static function has_forced_page_break_after(&$box) {
     return PageBreakLocator::is_forced_page_break($box->get_css_property(CSS_PAGE_BREAK_AFTER));
   }
 
-  function get_pages_traverse_block(&$box, &$next, &$previous, $penalty) {
+  static function get_pages_traverse_block(&$box, &$next, &$previous, $penalty) {
     $locations = array();
 
     // Absolute/fixed positioned blocks do not cause page breaks
@@ -304,8 +304,8 @@ class PageBreakLocator {
      * From my point of view, top and bottom borders should not affect page 
      * breaks (as they're not broken by page break), while left and right ones - should.
      */
-    $border_left =& $box->get_css_property(CSS_BORDER_LEFT);
-    $border_right =& $box->get_css_property(CSS_BORDER_RIGHT);
+    $border_left = $box->get_css_property(CSS_BORDER_LEFT);
+    $border_right = $box->get_css_property(CSS_BORDER_RIGHT);
 
     $has_left_border = $border_left->style != BS_NONE && $border_left->width->getPoints() > 0;
     $has_right_border = $border_left->style != BS_NONE && $border_left->width->getPoints() > 0;
@@ -322,7 +322,7 @@ class PageBreakLocator {
     return $locations;
   }
 
-  function get_more_before($base, $content, $size) {
+  static function get_more_before($base, $content, $size) {
     $i = $base;
     $more_before = 0;
 
@@ -341,7 +341,7 @@ class PageBreakLocator {
     return $more_before;
   }
 
-  function get_more_after($base, $content, $size) {
+  static function get_more_after($base, $content, $size) {
     $i = $base;
     $more = 0;
 
@@ -360,7 +360,7 @@ class PageBreakLocator {
     return $more;
   }
 
-  function get_pages_traverse_table_row(&$box, $penalty) {
+  static function get_pages_traverse_table_row(&$box, $penalty) {
     $locations = array();
 
     $cells = $box->getChildNodes();
@@ -455,7 +455,7 @@ class PageBreakLocator {
     return $locations;
   }
 
-  function get_pages_traverse_inline(&$box, $penalty, $more_before, $more_after) {
+  static function get_pages_traverse_inline(&$box, $penalty, $more_before, $more_after) {
     $locations = array();
 
     /**
@@ -536,7 +536,7 @@ class PageBreakLocator {
     return $locations;
   }
 
-  function &get_previous($index, $content, $size) {
+  static function get_previous($index, $content, $size) {
     for ($i = $index - 1; $i>=0; $i--) {
       $child = $content[$i];
       if (!$child->is_null()) {
@@ -548,9 +548,9 @@ class PageBreakLocator {
     return $dummy;
   }
 
-  function &get_next($index, &$content, $size) {
+  static function get_next($index, &$content, $size) {
     for ($i=$index + 1; $i<$size; $i++) {
-      $child =& $content[$i];
+      $child = $content[$i];
       if (!$child->is_null()) {
         return $child;
       };
@@ -560,7 +560,7 @@ class PageBreakLocator {
     return $dummy;
   }
 
-  function get_pages_traverse(&$box, $penalty) {
+  static function get_pages_traverse(&$box, $penalty) {
     if (!is_a($box, 'GenericContainerBox')) { 
       return array(); 
     };
@@ -568,9 +568,9 @@ class PageBreakLocator {
     $locations = array();
 
     for ($i=0, $content_size = count($box->content); $i<$content_size; $i++) {
-      $previous_child =& PageBreakLocator::get_previous($i, $box->content, $content_size);
-      $next_child     =& PageBreakLocator::get_next($i, $box->content, $content_size);
-      $child          =& $box->content[$i];
+      $previous_child = PageBreakLocator::get_previous($i, $box->content, $content_size);
+      $next_child     = PageBreakLocator::get_next($i, $box->content, $content_size);
+      $child          = $box->content[$i];
 
       /**
        * Note that page-break-xxx properties apply to block-level elements only
@@ -608,7 +608,7 @@ class PageBreakLocator {
     return $locations;
   }
 
-  function sort_locations($locations_ungrouped) {
+  static function sort_locations($locations_ungrouped) {
     if (count($locations_ungrouped) == 0) {
       return array();
     };

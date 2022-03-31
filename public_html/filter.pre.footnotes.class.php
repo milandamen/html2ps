@@ -10,7 +10,7 @@ require_once(HTML2PS_DIR.'box.note-call.class.php');
  * handles footnote rendering)
  */
 class PreTreeFilterFootnotes extends PreTreeFilter {
-  function process(&$tree, $data, &$pipeline) {
+  function process($tree, $data, &$pipeline) {
     if (is_a($tree, 'GenericContainerBox')) {
       for ($i=0; $i<count($tree->content); $i++) {
         /**
@@ -21,8 +21,8 @@ class PreTreeFilterFootnotes extends PreTreeFilter {
           if ($tree->content[$i]->get_css_property(CSS_POSITION) == POSITION_FOOTNOTE) {
             $tree->content[$i]->setCSSProperty(CSS_POSITION, POSITION_STATIC);
             
-            $note_call =& BoxNoteCall::create($tree->content[$i], $pipeline);
-            $tree->content[$i] =& $note_call;
+            $note_call = BoxNoteCall::create($tree->content[$i], $pipeline);
+            $tree->content[$i] = $note_call;
             
             $pipeline->_addFootnote($note_call);
           } else {

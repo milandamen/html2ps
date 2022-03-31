@@ -2,9 +2,9 @@
 // $Header: /cvsroot/html2ps/box.table.section.php,v 1.14 2006/10/28 12:24:16 Konstantin Exp $
 
 class TableSectionBox extends GenericContainerBox {
-  function &create(&$root, &$pipeline) {
-    $state =& $pipeline->get_current_css_state();
-    $box =& new TableSectionBox();
+  static function create(&$root, &$pipeline) {
+    $state = $pipeline->get_current_css_state();
+    $box = new TableSectionBox();
     $box->readCSS($state);
 
     // Automatically create at least one table row
@@ -15,7 +15,7 @@ class TableSectionBox extends GenericContainerBox {
     // Parse table contents
     $child = $root->first_child();
     while ($child) {
-      $child_box =& create_pdf_box($child, $pipeline);
+      $child_box = create_pdf_box($child, $pipeline);
       $box->add_child($child_box);
       $child = $child->next_sibling();
     };
@@ -23,8 +23,8 @@ class TableSectionBox extends GenericContainerBox {
     return $box;
   }
   
-  function TableSectionBox() {
-    $this->GenericContainerBox();
+  function __construct() {
+    parent::__construct();
   }
 
   // Overrides default 'add_child' in GenericFormattedBox
@@ -32,7 +32,7 @@ class TableSectionBox extends GenericContainerBox {
     // Check if we're trying to add table cell to current table directly, without any table-rows
     if ($item->isCell()) {
       // Add cell to the last row
-      $last_row =& $this->content[count($this->content)-1];
+      $last_row = $this->content[count($this->content)-1];
       $last_row->add_child($item);
 
     } elseif ($item->isTableRow()) {
@@ -44,7 +44,7 @@ class TableSectionBox extends GenericContainerBox {
       };
       
       // Just add passed row 
-      $this->content[] =& $item;
+      $this->content[] = $item;
     };
   }
 

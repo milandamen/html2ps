@@ -16,8 +16,8 @@
  */
 
 class CSSTextDecoration extends CSSPropertyHandler {
-  function CSSTextDecoration() { 
-    $this->CSSPropertyHandler(true, true); 
+  function __construct() {
+    parent::__construct(true, true);
   }
 
   function default_value() { 

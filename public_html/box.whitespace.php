@@ -2,8 +2,8 @@
 // $Header: /cvsroot/html2ps/box.whitespace.php,v 1.33 2007/01/24 18:55:46 Konstantin Exp $
 
 class WhitespaceBox extends TextBox {
-  function &create(&$pipeline) {
-    $box =& new WhitespaceBox();
+  static function createWithPipeline(&$pipeline) {
+    $box = new WhitespaceBox();
     $box->readCSS($pipeline->get_current_css_state());
     $box->add_subword(" ", 'iso-8859-1', array());
     return $box;
@@ -50,9 +50,9 @@ class WhitespaceBox extends TextBox {
     return $this->width;
   }
 
-  function WhitespaceBox() {
+  function __construct() {
     // Call parent constructor
-    $this->TextBox();
+    parent::__construct();
   }
 
   // (!) SIDE EFFECT: current whitespace box can be replaced by a null box during reflow.

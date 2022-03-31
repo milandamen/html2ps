@@ -4,22 +4,22 @@
 class OutputDriverGenericPS extends OutputDriverGeneric {
   var $language_level;
   var $image_encoder;
- 
-  function content_type() { 
-    return ContentType::ps(); 
+
+  function content_type() {
+    return ContentType::ps();
   }
 
-  function &get_image_encoder() { 
-    return $this->image_encoder; 
+  function &get_image_encoder() {
+    return $this->image_encoder;
   }
 
-  function get_language_level() { 
-    return $this->language_level; 
+  function get_language_level() {
+    return $this->language_level;
   }
 
-  function OutputDriverGenericPS($image_encoder) {
-    $this->OutputDriverGeneric();
-        
+  function __construct($image_encoder) {
+    parent::__construct();
+
     $this->set_language_level(2);
     $this->set_image_encoder($image_encoder);
   }

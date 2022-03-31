@@ -59,12 +59,12 @@ require_once(HTML2PS_DIR.'value.content.php');
  *    other elements than the subject of the selector.
  */
 class CSSContent extends CSSPropertyHandler {
-  function CSSContent() { 
-    $this->CSSPropertyHandler(false, false); 
+  function __construct() {
+    parent::__construct(false, false);
   }
 
-  function &default_value() { 
-    $data =& new ValueContent();
+  function default_value() {
+    $data = new ValueContent();
     return $data;
   }
 
@@ -73,12 +73,12 @@ class CSSContent extends CSSPropertyHandler {
   //
   // TODO: process values other than <string>
   //
-  function &parse($value) {
+  function parse($value) {
     if ($value == 'inherit') {
       return CSS_PROPERTY_INHERIT;
     };
 
-    $value_obj =& ValueContent::parse($value);
+    $value_obj = ValueContent::parse($value);
     return $value_obj;
   }
 

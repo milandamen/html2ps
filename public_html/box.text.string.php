@@ -5,15 +5,9 @@
 // instead of using globally visible functions in 'show'.
 
 class TextBoxString extends TextBox {
-  function &create($text, $encoding) {
-    $box =& new TextBoxString($text, $encoding);
-    $box->readCSS($pipeline->get_current_css_state());
-    return $box;
-  }
-
-  function TextBoxString($word, $encoding) {
+  function __construct($word, $encoding) {
     // Call parent constructor
-    $this->TextBox();
+    parent::__construct();
     $this->add_subword($word, $encoding, array());
   }
 

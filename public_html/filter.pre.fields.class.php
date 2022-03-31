@@ -4,7 +4,7 @@ class PreTreeFilterHTML2PSFields extends PreTreeFilter {
   var $filesize;
   var $_timestamp;
 
-  function PreTreeFilterHTML2PSFields($filename=null, $filesize=null, $timestamp=null) {
+  function __construct($filename=null, $filesize=null, $timestamp=null) {
     $this->filename  = $filename;
     $this->filesize  = $filesize;
 
@@ -15,14 +15,14 @@ class PreTreeFilterHTML2PSFields extends PreTreeFilter {
     };
   }
 
-  function process(&$tree, $data, &$pipeline) {
+  function process($tree, $data, &$pipeline) {
     if (is_a($tree, 'TextBox')) {
       // Ignore completely empty text boxes
       if (count($tree->words) == 0) { return; };
 
       switch ($tree->words[0]) {
       case '##PAGE##':
-        $parent =& $tree->parent;
+        $parent = $tree->parent;
         $field  = BoxTextFieldPageNo::from_box($tree);
 
         $parent->insert_before($field, $tree);
@@ -30,7 +30,7 @@ class PreTreeFilterHTML2PSFields extends PreTreeFilter {
         $parent->remove($tree);
         break;
       case '##PAGES##':
-        $parent =& $tree->parent;
+        $parent = $tree->parent;
         $field  = BoxTextFieldPages::from_box($tree);
         $parent->insert_before($field, $tree);
         $parent->remove($tree);

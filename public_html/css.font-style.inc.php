@@ -1,11 +1,11 @@
 <?php
 
 class CSSFontStyle extends CSSSubFieldProperty {
-  function default_value() {
+  static function default_value() {
     return FS_NORMAL;
   }
 
-  function parse($value) {
+  static function parse($value) {
     $value = trim(strtolower($value));
     switch ($value) {
     case 'inherit':

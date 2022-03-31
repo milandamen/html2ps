@@ -26,7 +26,7 @@ class FetchedDataURL extends FetchedDataHTML {
     return $encoding;
   }
 
-  function FetchedDataURL($content, $headers, $url) {
+  function __construct($content, $headers, $url) {
     $this->content     = $content;
     $this->headers     = $headers;
     $this->url         = $url;

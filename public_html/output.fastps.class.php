@@ -15,8 +15,8 @@ class OutputDriverFastPS extends OutputDriverGenericPS {
   var $underline;
   var $linethrough;
 
-  function OutputDriverFastPS(&$image_encoder) { 
-    $this->OutputDriverGenericPS($image_encoder);
+  function __construct(&$image_encoder) {
+    parent::__construct($image_encoder);
   }
 
   function add_link($x, $y, $w, $h, $target) { 
@@ -62,7 +62,7 @@ class OutputDriverFastPS extends OutputDriverGenericPS {
   }
   
   function _findfont($name, $encoding) {
-    $font =& $this->font_factory->get_type1($name, $encoding);
+    $font = $this->font_factory->get_type1($name, $encoding);
     if (is_null($font)) {
       $this->error_message .= $this->font_factory->error_message();
       $dummy = null;
@@ -223,7 +223,7 @@ class OutputDriverFastPS extends OutputDriverGenericPS {
   function reset(&$media) { 
     OutputDriverGenericPS::reset($media);
 
-    $this->media =& $media;
+    $this->media = $media;
     $this->data = fopen($this->get_filename(), "wb");
 
     // List of fonts names which already had generated findfond PS code
@@ -236,7 +236,7 @@ class OutputDriverFastPS extends OutputDriverGenericPS {
     $this->linethrough = false;
 
     // A font class factory
-    $this->font_factory =& new FontFactory;
+    $this->font_factory = new FontFactory;
 
     $this->_document_body = '';
     $this->_document_prolog = '';
@@ -288,7 +288,7 @@ class OutputDriverFastPS extends OutputDriverGenericPS {
   }
 
   function stringwidth($string, $name, $encoding, $size) { 
-    $font =& $this->font_factory->get_type1($name, $encoding);
+    $font = $this->font_factory->get_type1($name, $encoding);
 
     if (is_null($font)) {
       $this->error_message .= $this->font_factory->error_message();
@@ -389,8 +389,8 @@ class OutputDriverFastPS extends OutputDriverGenericPS {
     
     // Replace characters having 8-bit set with their octal representation
     for ($i=0; $i<strlen($str); $i++) {
-      if (ord($str{$i}) > 127) {
-        $str = substr_replace($str, sprintf("\\%o", ord($str{$i})), $i, 1);
+      if (ord($str[$i]) > 127) {
+        $str = substr_replace($str, sprintf("\\%o", ord($str[$i])), $i, 1);
         $i += 3;
       };
     };

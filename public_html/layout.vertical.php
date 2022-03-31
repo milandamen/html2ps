@@ -7,14 +7,14 @@ class LayoutVertical {
   // @param $context flow context containing the list of floats to interact with
   // @return updated value of Y coordinate
   //
-  function apply_clear($box, $y, &$context) {
+  static function apply_clear($box, $y, &$context) {
     $clear = $box->get_css_property(CSS_CLEAR);
 
     // Check if we need to offset box vertically due the 'clear' property
     if ($clear == CLEAR_BOTH || $clear == CLEAR_LEFT) {
-      $floats =& $context->current_floats();
+      $floats = $context->current_floats();
       for ($cf = 0; $cf < count($floats); $cf++) {
-        $current_float =& $floats[$cf];
+        $current_float = $floats[$cf];
         if ($current_float->get_css_property(CSS_FLOAT) == FLOAT_LEFT) {
           // Float vertical margins are never collapsed
           //
@@ -25,9 +25,9 @@ class LayoutVertical {
     };
     
     if ($clear == CLEAR_BOTH || $clear == CLEAR_RIGHT) {
-      $floats =& $context->current_floats();
+      $floats = $context->current_floats();
       for ($cf = 0; $cf < count($floats); $cf++) {
-        $current_float =& $floats[$cf];
+        $current_float = $floats[$cf];
         if ($current_float->get_css_property(CSS_FLOAT) == FLOAT_RIGHT) {
           // Float vertical margins are never collapsed
           $margin = $box->get_css_property(CSS_MARGIN);

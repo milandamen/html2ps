@@ -56,15 +56,15 @@ class CheckBox extends GenericFormattedBox {
    *
    * @see CheckBox::CheckBox()
    */
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     $value = $root->get_attribute('value');
 
     if (trim($value) == "") {
-      error_log("Checkbox with empty 'value' attribute");
+      log_error("Checkbox with empty 'value' attribute");
       $value = sprintf("___Value%s",md5(time().rand()));
     };
 
-    $box =& new CheckBox($root->has_attribute('checked'), 
+    $box = new CheckBox($root->has_attribute('checked'),
                          $root->get_attribute('name'),
                          $value);
     $box->readCSS($pipeline->get_current_css_state());
@@ -79,8 +79,8 @@ class CheckBox extends GenericFormattedBox {
    * 
    * @see CheckBox::create()
    */
-  function CheckBox($checked, $name, $value) {
-    $this->GenericFormattedBox();
+  function __construct($checked, $name, $value) {
+    parent::__construct();
 
     $this->_checked = $checked;
     $this->_name    = trim($name);
@@ -97,7 +97,7 @@ class CheckBox extends GenericFormattedBox {
    *
    * @see CheckBox::get_max_width
    */
-  function get_min_width(&$context) { 
+  function get_min_width(&$context, $limit=10E6) {
     return $this->width; 
   }
   
@@ -111,7 +111,7 @@ class CheckBox extends GenericFormattedBox {
    *
    * @see CheckBox::get_min_width
    */
-  function get_max_width(&$context) { 
+  function get_max_width(&$context, $limit=10E6) {
     return $this->width; 
   }
 

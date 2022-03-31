@@ -3,8 +3,8 @@
 require_once(HTML2PS_DIR.'pipeline.class.php');
 
 class PipelineFactory {
-  function &create_default_pipeline($encoding, $filename) {
-    $pipeline =& new Pipeline(); 
+  static function create_default_pipeline($encoding, $filename) {
+    $pipeline = new Pipeline();
 
     if (isset($GLOBALS['g_config'])) {
       $pipeline->configure($GLOBALS['g_config']);

@@ -5,7 +5,7 @@ require_once(HTML2PS_DIR.'css.constants.inc.php');
 class CSSPageSelector {
   var $_type;
 
-  function CSSPageSelector($type) {
+  function __construct($type) {
     $this->set_type($type);
   }
 
@@ -19,16 +19,16 @@ class CSSPageSelector {
 }
 
 class CSSPageSelectorAll extends CSSPageSelector {
-  function CSSPageSelectorAll() {
-    $this->CSSPageSelector(CSS_PAGE_SELECTOR_ALL);
+  function __construct() {
+    parent::__construct(CSS_PAGE_SELECTOR_ALL);
   }
 }
 
 class CSSPageSelectorNamed extends CSSPageSelector  {
   var $_name;
 
-  function CSSPageSelectorNamed($name) {
-    $this->CSSPageSelector(CSS_PAGE_SELECTOR_NAMED);
+  function __construct($name) {
+    parent::__construct(CSS_PAGE_SELECTOR_NAMED);
     $this->set_name($name);
   }
 
@@ -42,20 +42,20 @@ class CSSPageSelectorNamed extends CSSPageSelector  {
 }
 
 class CSSPageSelectorFirst extends CSSPageSelector {
-  function CSSPageSelectorFirst() {
-    $this->CSSPageSelector(CSS_PAGE_SELECTOR_FIRST);
+  function __construct() {
+    parent::__construct(CSS_PAGE_SELECTOR_FIRST);
   }
 }
 
 class CSSPageSelectorLeft extends CSSPageSelector {
-  function CSSPageSelectorLeft() {
-    $this->CSSPageSelector(CSS_PAGE_SELECTOR_LEFT);
+  function __construct() {
+    parent::__construct(CSS_PAGE_SELECTOR_LEFT);
   }
 }
 
 class CSSPageSelectorRight extends CSSPageSelector {
-  function CSSPageSelectorRight() {
-    $this->CSSPageSelector(CSS_PAGE_SELECTOR_RIGHT);
+  function __construct() {
+    parent::__construct(CSS_PAGE_SELECTOR_RIGHT);
   }
 }
 
@@ -64,11 +64,11 @@ class CSSAtRulePage {
   var $margin_boxes;
   var $css;
 
-  function CSSAtRulePage($selector, &$pipeline) {
+  function __construct($selector, &$pipeline) {
     $this->selector = $selector;
     $this->margin_boxes = array();
 
-    $this->css =& new CSSPropertyCollection();
+    $this->css = new CSSPropertyCollection();
   }
 
   function &getSelector() {
@@ -100,7 +100,7 @@ class CSSAtRuleMarginBox {
    * TODO: CSS_TEXT_ALIGN should get  top/bottom values by default for
    * left-top, left-bottom, right-top and right-bottom boxes
    */
-  function CSSAtRuleMarginBox($selector, &$pipeline) {
+  function __construct($selector, &$pipeline) {
     $this->selector = $selector;
 
     $css = "-html2ps-html-content: ''; content: ''; width: auto; height: auto; margin: 0; border: none; padding: 0; font: auto;";
@@ -119,8 +119,8 @@ class CSSAtRuleMarginBox {
   }
 
   function _getCSSDefaults($selector) {
-    $text_align_handler =& CSS::get_handler(CSS_TEXT_ALIGN);
-    $vertical_align_handler =& CSS::get_handler(CSS_VERTICAL_ALIGN);
+    $text_align_handler = CSS::get_handler(CSS_TEXT_ALIGN);
+    $vertical_align_handler = CSS::get_handler(CSS_VERTICAL_ALIGN);
     
     switch ($selector) {
     case CSS_MARGIN_BOX_SELECTOR_TOP:
@@ -194,14 +194,14 @@ function parse_css_atpage_rule($css, &$css_ruleset) {
    * Extract selector and left bracket
    */
   if (!preg_match('/^(.*?){(.*)$/is', $css, $matches)) { 
-    error_log('No selector and/or open bracket found in @page rule');
+    log_error('No selector and/or open bracket found in @page rule');
     return $css; 
   };
   $raw_selector = trim($matches[1]);
   $css          = trim($matches[2]);
 
-  $selector =& parse_css_atpage_selector($raw_selector);
-  $at_rule =& new CSSAtRulePage($selector, $css_ruleset);
+  $selector = parse_css_atpage_selector($raw_selector);
+  $at_rule = new CSSAtRulePage($selector, $css_ruleset);
 
   /**
    * The body of @page rule may contain declaraction (detected by ';'), 
@@ -241,7 +241,7 @@ function parse_css_atpage_rule($css, &$css_ruleset) {
   /**
    * Note that we should normally exit via '}' token handler above
    */
-  error_log('No close bracket found in @page rule');
+  log_error('No close bracket found in @page rule');
   $css_ruleset->add_at_rule_page($at_rule);
   return $css; 
 }
@@ -255,24 +255,24 @@ function parse_css_atpage_rule($css, &$css_ruleset) {
 function &parse_css_atpage_selector($selector) {
   switch ($selector) {
   case '':
-    $selector =& new CSSPageSelectorAll();
+    $selector = new CSSPageSelectorAll();
     return $selector;
   case ':first':
-    $selector =& new CSSPageSelectorFirst();
+    $selector = new CSSPageSelectorFirst();
     return $selector;
   case ':left':
-    $selector =& new CSSPageSelectorLeft();
+    $selector = new CSSPageSelectorLeft();
     return $selector;
   case ':right':
-    $selector =& new CSSPageSelectorRight();
+    $selector = new CSSPageSelectorRight();
     return $selector;
   default:
     if (CSS::is_identifier($selector)) {
-      $selector =& new CSSPageSelectorNamed($selector);
+      $selector = new CSSPageSelectorNamed($selector);
       return $selector;
     } else {
-      error_log(sprintf('Unknown page selector in @page rule: \'%s\'', $selector));
-      $selector =& new CSSPageSelectorAll();
+      log_error(sprintf('Unknown page selector in @page rule: \'%s\'', $selector));
+      $selector = new CSSPageSelectorAll();
       return $selector;
     };
   };
@@ -280,7 +280,7 @@ function &parse_css_atpage_selector($selector) {
 
 function parse_css_atpage_margin_box($css, &$at_rule, &$pipeline) {
   if (!preg_match("/^([-\w]*)\s*{(.*)/is",$css,$matches)) {
-    error_log("Invalid margin box at-rule format");
+    log_error("Invalid margin box at-rule format");
     return $css;
   };
 
@@ -320,7 +320,7 @@ function parse_css_atpage_margin_box($css, &$at_rule, &$pipeline) {
   /**
    * Note that we should normally exit via '}' token handler above
    */
-  error_log('No close bracket found in margin box at-rule');
+  log_error('No close bracket found in margin box at-rule');
   $at_rule->addAtRuleMarginBox($at_rule_margin_box);
   return $css; 
 }
@@ -364,13 +364,13 @@ function parse_css_atpage_margin_box_selector($css) {
   case 'right-bottom':
     return CSS_MARGIN_BOX_SELECTOR_RIGHT_BOTTOM;
   default:
-    error_log(sprintf('Unrecognized margin box selector: \'%s\'', $css));
+    log_error(sprintf('Unrecognized margin box selector: \'%s\'', $css));
     return CSS_MARGIN_BOX_SELECTOR_TOP;
   }
 };
 
 function parse_css_atpage_declaration($css, &$at_rule, &$pipeline) {
-  $parsed =& parse_css_property($css, $pipeline);
+  $parsed = parse_css_property($css, $pipeline);
 
   if (!is_null($parsed)) {
     $properties = $parsed->getPropertiesSortedByPriority();
@@ -381,7 +381,7 @@ function parse_css_atpage_declaration($css, &$at_rule, &$pipeline) {
 }
 
 function parse_css_atpage_margin_box_declaration($css, &$at_rule, &$pipeline) {
-  $parsed =& parse_css_property($css, $pipeline);
+  $parsed = parse_css_property($css, $pipeline);
 
   if (!is_null($parsed)) {
     $properties = $parsed->getPropertiesSortedByPriority();

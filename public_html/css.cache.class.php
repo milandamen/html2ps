@@ -4,7 +4,7 @@
  * "Singleton"
  */
 class CSSCache {
-  function get() {
+  static function get() {
     global $__g_css_manager;
 
     if (!isset($__g_css_manager)) {
@@ -30,7 +30,7 @@ class CSSCache {
   }
 
   function _putCached($url, $css) {
-    file_put_contents($this->_getCacheFilename($url), serialize($css));
+    file_put_contents($this->_getCacheFilename($url), serialize($css), FILE_USE_INCLUDE_PATH);
   }
 
   function &compile($url, $css, &$pipeline) {

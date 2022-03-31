@@ -24,18 +24,18 @@ function guess_url($path, $baseurl) {
   $base_path   = isset($data['path'])   ? $data['path']     : "/";
 
   /**
-   * Workaround: Some PHP versions do remove the leading slash from the 
+   * Workaround: Some PHP versions do remove the leading slash from the
    * 'file://' URLs with empty host name, while some do not.
    *
    * An example of such URL is: file:///D:/path/dummy.html
    * The path should be: /D:/path/dummy.html
-   * 
+   *
    * Here we check if the leading slash is present and
    * add it if it is missing.
    */
   if ($base_scheme == "file" && PHP_OS == "WINNT") {
     if (strlen($base_path) > 0) {
-      if ($base_path{0} != "/") {
+      if ($base_path[0] != "/") {
         $base_path = "/".$base_path;
       };
     };
@@ -44,7 +44,7 @@ function guess_url($path, $baseurl) {
   $base_user_pass = "";
   if ($base_user || $base_pass) {
     $base_user_pass = sprintf("%s:%s@", $base_user, $base_pass);
-  } 
+  }
 
   // 'Path' is starting at scheme?
   if (substr($path,0,2) == "//") {

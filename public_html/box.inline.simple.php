@@ -3,8 +3,8 @@
 require_once(HTML2PS_DIR.'box.generic.formatted.php');
 
 class SimpleInlineBox extends GenericBox {
-  function SimpleInlineBox() {
-    $this->GenericBox();
+  function __construct() {
+    parent::__construct();
   }
 
   function readCSS(&$state) {
@@ -41,7 +41,7 @@ class SimpleInlineBox extends GenericBox {
   function show(&$driver) {
     parent::show($driver);
 
-    $strategy =& new StrategyLinkRenderingNormal();
+    $strategy = new StrategyLinkRenderingNormal();
     $strategy->apply($this, $driver);
   }
 }

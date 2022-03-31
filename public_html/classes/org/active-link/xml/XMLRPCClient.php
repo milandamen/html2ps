@@ -53,8 +53,8 @@ class XMLRPCClient extends HTTPClient {
 	  *	@param		string host
 	  *	@param		optional int port
 	  */
-	function XMLRPCClient($host, $port = 80) {
-		$this->HTTPClient($host, $port);
+	function __construct($host, $port = 80) {
+		parent::__construct($host, $port);
 		$this->setRequestMethod("POST");
 		$this->addRequestHeaderRaw("Content-type: text/xml");
 		$this->xml = new XML("methodCall");
@@ -62,7 +62,7 @@ class XMLRPCClient extends HTTPClient {
 		$this->xml->setTagContent("", "methodCall/params");
 		$this->xmlDoc = new XMLDocument();
 		$this->xmlDoc->setXML($this->xml);
-		$paramsBranchArray = &$this->xml->getBranches("methodCall", "params");
+		$paramsBranchArray = $this->xml->getBranches("methodCall", "params");
 		$this->params = &$paramsBranchArray[0];
 		// this call not necessary if we can somehow update body before HTTPClient->sendRequest
 		$this->setRequestBody($this->xmlDoc->getXMLString());

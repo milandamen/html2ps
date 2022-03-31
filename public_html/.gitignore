@@ -1,0 +1,7 @@
+/cache/
+/temp/
+/out/
+/fonts/
+.buildpath
+.project
+.settings/

@@ -1,11 +1,11 @@
 <?php
 
 class CSSWidows extends CSSPropertyHandler {
-  function CSSWidows() { 
-    $this->CSSPropertyHandler(true, false); 
+  function __construct() {
+    parent::__construct(true, false);
   }
 
-  function default_value() { return 2; }
+  static function default_value() { return 2; }
 
   function parse($value) {
     return (int)$value;

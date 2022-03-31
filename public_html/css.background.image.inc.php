@@ -10,11 +10,11 @@ class CSSBackgroundImage extends CSSSubFieldProperty {
     return 'background-image';
   }
 
-  function default_value() { 
+  static function default_value() {
     return new BackgroundImage(null, null); 
   }
 
-  function parse($value, &$pipeline) {
+  static function parse($value, &$pipeline) {
     global $g_config;
     if (!$g_config['renderimages']) {
       return CSSBackgroundImage::default_value();

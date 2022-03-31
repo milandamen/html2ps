@@ -22,7 +22,7 @@ class Font {
     return $this->error_message; 
   }
 
-  function Font() {}
+  function __construct() {}
 
   function linethrough_position() {
     return $this->bbox[3]*0.25;
@@ -36,7 +36,7 @@ class Font {
     return $this->bbox[3]*0.8;
   }
 
-  function points($fontsize, $dimension) {
+  static function points($fontsize, $dimension) {
     return $dimension * $fontsize / 1000;
   }
 
@@ -45,7 +45,7 @@ class Font {
 
     $length = strlen($string);
     for ($i=0; $i<$length; $i++) {
-      $width += $this->char_widths[$string{$i}];
+      $width += $this->char_widths[$string[$i]];
     };
 
     return $width;
@@ -61,7 +61,7 @@ class Font {
 }
 
 class FontTrueType extends Font {
-  function create($fontfile, $encoding) {
+  static function create($fontfile, $encoding) {
     $font = new FontTrueType();
     $font->_read(TTF_FONTS_REPOSITORY.$fontfile, $encoding);
     return $font;
@@ -71,7 +71,7 @@ class FontTrueType extends Font {
    * TODO: cache results; replace makefont with this utility
    */
   function _read($file, $encoding) {
-    error_log(sprintf("Parsing font file file %s for encoding %s", $file, $encoding));
+    log_info(sprintf("Parsing font file file %s for encoding %s", $file, $encoding));
     
     $font = new OpenTypeFile();
     $font->open($file);
@@ -122,7 +122,7 @@ class FontTrueType extends Font {
 // Note that ALL font dimensions are measured in 1/1000 of font size units;
 //
 class FontType1 extends Font {
-  function &create($typeface, $encoding, $font_resolver, &$error_message) {
+  static function create($typeface, $encoding, $font_resolver, &$error_message) {
     $font = new FontType1();
 
     $font->underline_position = 0;
@@ -166,7 +166,7 @@ class FontType1 extends Font {
       $this->error_message = ob_get_contents();
       ob_end_clean();
 
-      error_log(sprintf("Missing font metrics file: %s",$filename));
+      log_error(sprintf("Missing font metrics file: %s",$filename));
       return false;
     };
 

@@ -4,8 +4,8 @@
 require_once(HTML2PS_DIR.'value.left.php');
 
 class CSSLeft extends CSSPropertyHandler {
-  function CSSLeft() { 
-    $this->CSSPropertyHandler(false, false); 
+  function __construct() {
+    parent::__construct(false, false);
     $this->_autoValue = ValueLeft::fromString('auto');
   }
 
@@ -13,7 +13,7 @@ class CSSLeft extends CSSPropertyHandler {
     return $this->_autoValue->copy();
   }
 
-  function default_value() { 
+  function default_value_m() {
     return $this->_getAutoValue();
   }
 

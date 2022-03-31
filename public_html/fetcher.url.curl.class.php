@@ -13,13 +13,13 @@ class FetcherUrlCurl extends Fetcher {
   var $url;
   var $_proxy;
 
-  function FetcherUrlCurl() {
+  function __construct() {
     $this->url = "";
     $this->set_proxy(null);
   }
 
   function _fix_url($url) {
-    // If only host name was specified, add trailing slash 
+    // If only host name was specified, add trailing slash
     // (e.g. replace http://www.google.com with http://www.google.com/
     if (preg_match('#^.*://[^/]+$#', $url)) {
       $url .= '/';
@@ -44,7 +44,7 @@ class FetcherUrlCurl extends Fetcher {
     curl_setopt($curl, CURLOPT_USERAGENT, DEFAULT_USER_AGENT);
 
     if (!@curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1)) {
-      error_log('CURLOPT_FOLLOWLOCATION will not work in safe_mode; pages with redirects may be rendered incorrectly');
+      log_warning('CURLOPT_FOLLOWLOCATION will not work in safe_mode; pages with redirects may be rendered incorrectly');
     };
 
     curl_setopt($curl, CURLOPT_HEADER, 1);
@@ -54,15 +54,15 @@ class FetcherUrlCurl extends Fetcher {
     if (!is_null($proxy)) {
       curl_setopt($curl, CURLOPT_PROXY, $proxy);
     };
-    
+
     /**
      * Fetch headers and page content to the $response variable
      * and close CURL session
      */
     $response = curl_exec($curl);
-    
+
     if ($response === FALSE) {
-      error_log(sprintf('Cannot open %s, CURL error is: %s',
+      log_error(sprintf('Cannot open %s, CURL error is: %s',
                         $url,
                         curl_error($curl)));
       curl_close($curl);
@@ -70,13 +70,13 @@ class FetcherUrlCurl extends Fetcher {
     }
 
     curl_close($curl);
-  
+
     /**
-     * According to HTTP standard, headers block separated from 
+     * According to HTTP standard, headers block separated from
      * body block with empty line - '\r\n\r\n' sequence. As body
-     * might contain this sequence too, we should use 'non-greedy' 
-     * modifier on the first group in the regular expression. 
-     * Of course, we should process the response as a whole using 
+     * might contain this sequence too, we should use 'non-greedy'
+     * modifier on the first group in the regular expression.
+     * Of course, we should process the response as a whole using
      * 's' modifier.
      */
     preg_match('/^(.*?)\r\n\r\n(.*)$/s', $response, $matches);
@@ -86,7 +86,7 @@ class FetcherUrlCurl extends Fetcher {
      * separated with '\r\n' sequence.
      *
      * The very first line contains HTTP response code (e.g. HTTP/1.1 200 OK),
-     * so we may safely ignore it. 
+     * so we may safely ignore it.
      */
     $headers = array_slice(explode("\r\n", $matches[1]),1);
     $content = $matches[2];

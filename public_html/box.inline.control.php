@@ -2,8 +2,8 @@
 // $Header: /cvsroot/html2ps/box.inline.control.php,v 1.7 2006/09/07 18:38:12 Konstantin Exp $
 
 class InlineControlBox extends InlineBox {
-  function InlineControlBox() {
-    $this->InlineBox();
+  function __construct() {
+    parent::__construct();
   }
 
   function get_min_width(&$context, $limit = 10E6) { 
@@ -50,7 +50,7 @@ class InlineControlBox extends InlineBox {
     $this->baseline         = $this->content[0]->baseline + $this->get_extra_top();
 
     // center the text vertically inside the control
-    $text =& $this->content[0];
+    $text = $this->content[0];
     $delta = ($text->get_top() - $text->get_height()/2) - ($this->get_top() - $this->get_height()/2);
     $text->offset(0,-$delta);
 
@@ -73,7 +73,8 @@ class InlineControlBox extends InlineBox {
     $ibox = InlineBox::create_from_text($text, WHITESPACE_PRE, $pipeline);
 
     if (count($ibox->content) == 0) {
-      $this->append_child(TextBox::create(' ', 'iso-8859-1', $pipeline));
+        $box = TextBox::create(' ', 'iso-8859-1', $pipeline);
+        $this->append_child($box);
     } else {
       for ($i=0, $size = count($ibox->content); $i<$size; $i++) {
         $this->append_child($ibox->content[$i]);

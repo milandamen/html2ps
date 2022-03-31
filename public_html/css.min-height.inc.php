@@ -6,8 +6,8 @@ require_once(HTML2PS_DIR.'value.min-height.php');
 class CSSMinHeight extends CSSPropertyHandler {
   var $_defaultValue;
 
-  function CSSMinHeight() { 
-    $this->CSSPropertyHandler(true, false); 
+  function __construct() {
+    parent::__construct(true, false);
     $this->_defaultValue = ValueMinHeight::fromString("0px");
   }
 
@@ -25,14 +25,14 @@ class CSSMinHeight extends CSSPropertyHandler {
     $new_state[CSS_MIN_HEIGHT] = 
       is_inline_element($parent_display) ? 
       $this->get($old_state) : 
-      $this->default_value();
+      $this->default_value_m();
   }
 
   function _getAutoValue() {
-    return $this->default_value();
+    return $this->default_value_m();
   }
 
-  function default_value() { 
+  function default_value_m() {
     return $this->_defaultValue->copy();
   }
 

@@ -5,13 +5,13 @@ require_once(HTML2PS_DIR.'value.list-style.class.php');
 
 class CSSListStyle extends CSSPropertyHandler {
   // CSS 2.1: list-style is inherited
-  function CSSListStyle() { 
+  function __construct() {
     $this->default_value = new ListStyleValue;
     $this->default_value->image    = CSSListStyleImage::default_value();
     $this->default_value->position = CSSListStylePosition::default_value();
     $this->default_value->type     = CSSListStyleType::default_value();
 
-    $this->CSSPropertyHandler(true, true); 
+    parent::__construct(true, true);
   }
 
   function parse($value, &$pipeline) { 
@@ -23,7 +23,7 @@ class CSSListStyle extends CSSPropertyHandler {
     return $style;
   }
 
-  function default_value() { return $this->default_value; }
+  function default_value_m() { return $this->default_value; }
 
   function get_property_code() {
     return CSS_LIST_STYLE;

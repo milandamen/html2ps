@@ -5,14 +5,14 @@ class TextAreaInputBox extends InlineBlockBox {
   var $_field_name;
   var $_value;
 
-  function TextAreaInputBox($value, $name) {
-    $this->InlineBlockBox();
+  function __construct($value, $name) {
+    parent::__construct();
 
     $this->set_value($value);
     $this->_field_name  = $name;
   }
 
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     $value = $root->get_content();
     $name  = $root->get_attribute('name');
 
@@ -28,11 +28,11 @@ class TextAreaInputBox extends InlineBlockBox {
     return $normal_height - $this->_get_vert_extra();
   }
 
-  function get_min_width(&$context) { 
+  function get_min_width(&$context, $limit=10E6) {
     return $this->get_max_width($context);
   } 
 
-  function get_max_width(&$context) {
+  function get_max_width(&$context, $limit=10E6) {
     return $this->get_width();
   }
 

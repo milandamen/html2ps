@@ -6,19 +6,19 @@ define('SCALE_WIDTH',1);
 define('SCALE_HEIGHT',2);
 
 class GenericImgBox extends GenericInlineBox {
-  function GenericImgBox() {
-    $this->GenericInlineBox();
+  function __construct() {
+    parent::__construct();
   }
 
-  function get_max_width_natural(&$context) {
-    return $this->get_full_width($context);
+  function get_max_width_natural(&$context, $limit=10E6) {
+    return $this->get_full_width();
   }
 
-  function get_min_width(&$context) { 
+  function get_min_width(&$context, $limit=10E6) {
     return $this->get_full_width(); 
   }
 
-  function get_max_width(&$context) { 
+  function get_max_width(&$context, $limit=10E6) {
     return $this->get_full_width(); 
   }
 
@@ -93,7 +93,7 @@ class GenericImgBox extends GenericInlineBox {
       return $this->_cache[CACHE_TYPEFACE][$subword_index];
     };
 
-    $font_resolver =& $driver->get_font_resolver();
+    $font_resolver = $driver->get_font_resolver();
 
     $font = $this->get_css_property(CSS_FONT);
     $typeface = $font_resolver->get_typeface_name($font->family, 
@@ -122,13 +122,13 @@ class GenericImgBox extends GenericInlineBox {
        */
       $ascender  = $driver->font_ascender($font_name, 'iso-8859-1');
       if (is_null($ascender)) {
-        error_log("ImgBox::reflow_text: cannot get font ascender");
+        log_error("ImgBox::reflow_text: cannot get font ascender");
         return null;
       };
 
       $descender = $driver->font_descender($font_name, 'iso-8859-1'); 
       if (is_null($descender)) {
-        error_log("ImgBox::reflow_text: cannot get font descender");
+        log_error("ImgBox::reflow_text: cannot get font descender");
         return null;
       };
 
@@ -164,12 +164,12 @@ class GenericImgBox extends GenericInlineBox {
 class BrokenImgBox extends GenericImgBox {
   var $alt;
 
-  function BrokenImgBox($width, $height, $alt) {
+  function __construct($width, $height, $alt) {
     $this->scale = SCALE_NONE;
     $this->encoding = DEFAULT_ENCODING;
 
     // Call parent constructor
-    $this->GenericImgBox();
+    parent::__construct();
 
     $this->alt = $alt;
   }  
@@ -214,7 +214,7 @@ class BrokenImgBox extends GenericImgBox {
 
     $driver->restore();
 
-    $strategy =& new StrategyLinkRenderingNormal();
+    $strategy = new StrategyLinkRenderingNormal();
     $strategy->apply($this, $driver);
 
     return true;
@@ -225,18 +225,18 @@ class ImgBox extends GenericImgBox {
   var $image;
   var $type; // unused; should store the preferred image format (JPG / PNG)
 
-  function ImgBox($img) {
+  function __construct($img) {
     $this->encoding = DEFAULT_ENCODING;
     $this->scale = SCALE_NONE;
 
     // Call parent constructor
-    $this->GenericImgBox();
+    parent::__construct();
 
     // Store image for further processing
     $this->image = $img;
   }
 
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     // Open image referenced by HTML tag
     // Some crazy HTML writers add leading and trailing spaces to SRC attribute value - we need to remove them
     //
@@ -263,7 +263,7 @@ class ImgBox extends GenericImgBox {
 
       $alt = $root->get_attribute('alt');
 
-      $box =& new BrokenImgBox($width, $height, $alt);
+      $box = new BrokenImgBox($width, $height, $alt);
 
       $box->readCSS($pipeline->get_current_css_state());
 
@@ -277,7 +277,7 @@ class ImgBox extends GenericImgBox {
       
       return $box;
     } else {
-      $box =& new ImgBox($src_img);
+      $box = new ImgBox($src_img);
       $box->readCSS($pipeline->get_current_css_state());
       $box->_setupSize();
      
@@ -342,7 +342,7 @@ class ImgBox extends GenericImgBox {
                           $this->get_width() / $this->image->sx(), 
                           $this->get_height() / $this->image->sy());
 
-    $strategy =& new StrategyLinkRenderingNormal();
+    $strategy = new StrategyLinkRenderingNormal();
     $strategy->apply($this, $driver);
 
     return true;

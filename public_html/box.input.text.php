@@ -10,14 +10,14 @@ class TextInputBox extends InlineControlBox {
    */
   var $_value;
 
-  function TextInputBox($value, $name) {
-    $this->InlineControlBox();
+  function __construct($value, $name) {
+    parent::__construct();
 
     $this->_value = $value;
     $this->_field_name = $name;
   }
 
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     // Text to be displayed
     if ($root->has_attribute('value')) {
       $text = trim($root->get_attribute('value'));
@@ -30,7 +30,7 @@ class TextInputBox extends InlineControlBox {
      */
     $name = $root->get_attribute('name');
 
-    $box =& new TextInputBox($root->get_attribute("value"), $name);
+    $box = new TextInputBox($root->get_attribute("value"), $name);
     $box->readCSS($pipeline->get_current_css_state());
     $box->setup_content($text, $pipeline);
 

@@ -6,7 +6,7 @@ class CSSPropertyCollection {
   var $_priorities;
   var $_max_priority;
 
-  function CSSPropertyCollection() {
+  function __construct() {
     $this->_properties = array();
     $this->_positions  = array();
     $this->_priorities = array();
@@ -19,17 +19,17 @@ class CSSPropertyCollection {
       $key   = $property->get_code();
       $value = $property->get_value();
       
-      $handler =& CSS::get_handler($key);
+      $handler = CSS::get_handler($key);
       $handler->replace($value, $state);
     };
   }
 
   function &copy() {
-    $collection =& new CSSPropertyCollection();
+    $collection = new CSSPropertyCollection();
     
     for ($i = 0, $size = count($this->_properties); $i < $size; $i++) {
-      $property =& $this->_properties[$i];
-      $collection->_properties[] =& $property->copy();
+      $property = $this->_properties[$i];
+      $collection->_properties[] = $property->copy();
     };
 
     $collection->_positions    = $this->_positions;
@@ -101,7 +101,7 @@ class CSSPropertyCollection {
       return $null;
     };
 
-    $property =& $this->_properties[$this->_positions[$code]];
+    $property = $this->_properties[$this->_positions[$code]];
     return $property->get_value();
   }
 

@@ -2,7 +2,7 @@
 // $Header: /cvsroot/html2ps/converter.class.php,v 1.6 2006/06/25 13:55:35 Konstantin Exp $
 
 class Converter {
-  function create() {
+  static function create() {
 //     if (function_exists('iconv')) {
 //       return new IconvConverter;
 //     } else {
@@ -46,8 +46,8 @@ class PurePHPConverter {
 
   function something_to_utf8($html, &$mapping) {
     for ($i=0; $i < strlen($html); $i++) {
-      $replacement = code_to_utf8($mapping[$html{$i}]);
-      if ($replacement != $html{$i}) {
+      $replacement = code_to_utf8($mapping[$html[$i]]);
+      if ($replacement != $html[$i]) {
         $html = substr_replace($html, $replacement, $i, 1);
         $i += strlen($replacement) - 1;
       };

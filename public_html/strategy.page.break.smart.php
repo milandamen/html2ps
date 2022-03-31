@@ -1,7 +1,7 @@
 <?php
 
 class StrategyPageBreakSmart {
-  function StrategyPageBreakSmart() {
+  function __construct() {
   }
 
   function run(&$pipeline, &$media, &$box) {

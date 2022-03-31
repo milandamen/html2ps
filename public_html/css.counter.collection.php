@@ -3,12 +3,12 @@
 class CSSCounterCollection {
   var $_counters;
 
-  function CSSCounterCollection() {
+  function __construct() {
     $this->_counters = array();
   }
 
   function add(&$counter) {
-    $this->_counters[$counter->get_name()] =& $counter;
+    $this->_counters[$counter->get_name()] = $counter;
   }
 
   function &get($name) {

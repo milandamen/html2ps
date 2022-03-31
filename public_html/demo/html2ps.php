@@ -118,7 +118,7 @@ if ($GLOBALS['g_config']['renderfields']) {
   $pipeline->pre_tree_filters[] = new PreTreeFilterHTML2PSFields();
 };
 
-// 
+//
 
 if ($GLOBALS['g_config']['method'] === 'ps') {
   $pipeline->layout_engine = new LayoutEnginePS();
@@ -227,11 +227,11 @@ if (get_var('process_mode', $_REQUEST) == 'batch') {
   $status = $pipeline->process($g_baseurl, $g_media);
 };
 
-error_log(sprintf("Processing of '%s' completed in %u seconds", $g_baseurl, time() - $time));
+log_info(sprintf("Processing of '%s' completed in %u seconds", $g_baseurl, time() - $time));
 
 if ($status == null) {
   print($pipeline->error_message());
-  error_log("Error in conversion pipeline");
+  log_error("Error in conversion pipeline");
   die();
 }
 

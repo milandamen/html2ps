@@ -5,12 +5,12 @@ require_once(HTML2PS_DIR.'value.padding.class.php');
 class CSSPadding extends CSSPropertyHandler {
   var $default_value;
 
-  function CSSPadding() { 
+  function __construct() {
     $this->default_value = $this->parse("0");
-    $this->CSSPropertyHandler(false, false); 
+    parent::__construct(false, false);
   }
 
-  function default_value() { return $this->default_value->copy(); }
+  function default_value_m() { return $this->default_value->copy(); }
 
   function parse_in($value) {
     $values = preg_split('/\s+/', trim($value));

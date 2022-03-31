@@ -1,11 +1,11 @@
 <?php
 
 class BodyBox extends BlockBox {
-  function BodyBox() {
-    $this->BlockBox();
+  function __construct() {
+    parent::__construct();
   }
 
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     $box = new BodyBox();
     $box->readCSS($pipeline->get_current_css_state());
     $box->create_content($root, $pipeline);

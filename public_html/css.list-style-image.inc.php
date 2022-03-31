@@ -5,11 +5,11 @@ class CSSListStyleImage extends CSSSubFieldProperty {
   /**
    * CSS 2.1: default value for list-style-image is none
    */
-  function default_value() { 
+  static function default_value() {
     return new ListStyleImage(null, null); 
   }
 
-  function parse($value, &$pipeline) {
+  static function parse($value, &$pipeline) {
     if ($value === 'inherit') {
       return CSS_PROPERTY_INHERIT;
     };

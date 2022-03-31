@@ -5,14 +5,14 @@ class FlowViewport {
   var $width;
   var $height;
 
-  function FlowViewport() {
+  function __construct() {
     $this->left = 0;
     $this->top = 0;
     $this->width = 0;
     $this->height = 0;
   }
 
-  function &create(&$box) {
+  static function create(&$box) {
     $viewport = new FlowViewport;
     $viewport->left   = $box->get_left_padding();
     $viewport->top    = $box->get_top_padding();

@@ -6,8 +6,8 @@ class CSSState {
   var $_handlerSet;
   var $_baseFontSize;
 
-  function CSSState(&$handlerSet) {
-    $this->_handlerSet        =& $handlerSet;
+  function __construct(&$handlerSet) {
+    $this->_handlerSet        = $handlerSet;
     $this->_state             =  array($this->_getDefaultState());
     $this->_stateDefaultFlags =  array($this->_getDefaultStateFlags());
 
@@ -82,12 +82,13 @@ class CSSState {
     $state = $this->getState();
 
     $this->pushState();
-    $this->_state[0] = $this->_getDefaultState();
-    $new_state =& $this->getState();
+    $new_state = $this->_getDefaultState();
+    $this->_state[0] = $new_state;
 
+    /** @var CSSPropertyHandler[] $handlers */
     $handlers = $this->_handlerSet->getInheritableTextHandlers();
     foreach ($handlers as $property => $handler) {
-      $handler->inherit_text($state, $new_state);
+      $handler->inherit_text($state, $this->_state[0]);
     }
   }
 
@@ -100,11 +101,11 @@ class CSSState {
   }
 
   function &getInheritedProperty($code) {
-    $handler =& CSS::get_handler($code);
+    $handler = CSS::get_handler($code);
 
     $size = count($this->_state);
     for ($i=0; $i<$size; $i++) {
-      $value =& $handler->get($this->_state[$i]);
+      $value = $handler->get($this->_state[$i]);
       if ($value != CSS_PROPERTY_INHERIT) {
         return $value;
       };
@@ -114,7 +115,7 @@ class CSSState {
       // '1em' instead,  forcing the script to  take parent calculated
       // value later
       if ($code == CSS_FONT_SIZE) {
-        $value =& Value::fromData(1, UNIT_EM);
+        $value = Value::fromData(1, UNIT_EM);
         return $value;
       };
     };
@@ -138,9 +139,9 @@ class CSSState {
   function &get_property($code) {
     static $cache = array();
     if (!isset($cache[$code])) {
-      $cache[$code] =& CSS::get_handler($code);
+      $cache[$code] = CSS::get_handler($code);
     };
-    $value =& $cache[$code]->get($this->_state[0]);
+    $value = $cache[$code]->get($this->_state[0]);
     return $value;
   }
 
@@ -153,7 +154,7 @@ class CSSState {
   }
 
   function set_propertyDefault($code, $value) {
-    $state =& $this->getState();
+    $state = &$this->getState();
     $state[$code] = $value;
   }
 
@@ -165,14 +166,14 @@ class CSSState {
 
     static $cache = array();
     if (!isset($cache[$code])) {
-      $cache[$code] =& CSS::get_handler($code);
+      $cache[$code] = CSS::get_handler($code);
     };
 
     $cache[$code]->clearDefaultFlags($this);
   }
 
   function set_propertyDefaultFlag($code, $value) {
-    $state_flags =& $this->getStateDefaultFlags();
+    $state_flags = &$this->getStateDefaultFlags();
     $state_flags[$code] = $value;
   }
 

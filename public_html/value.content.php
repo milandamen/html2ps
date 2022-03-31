@@ -5,16 +5,16 @@ require_once(HTML2PS_DIR.'value.content.item.php');
 class ValueContent {
   var $_items;
 
-  function ValueContent() {
+  function __construct() {
     $this->set_items(array());
   }
 
   function add_item(&$item) {
-    $this->_items[] =& $item;
+    $this->_items[] = $item;
   }
 
   function &copy() {
-    $copy =& new ValueContent();
+    $copy = new ValueContent();
 
     foreach ($this->_items as $item) {
       $copy->add_item($item->copy());
@@ -27,13 +27,13 @@ class ValueContent {
     
   }
 
-  function &parse($string) {
-    $value =& new ValueContent();
+  static function parse($string) {
+    $value = new ValueContent();
 
     while ($string !== '') {
       $result = ValueContentItem::parse($string);
 
-      $item =& $result['item'];
+      $item = $result['item'];
       $rest = $result['rest'];
 
       $string = $rest;

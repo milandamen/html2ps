@@ -277,8 +277,8 @@ class OutputDriverPdflib extends OutputDriverGenericPDF {
     $this->_status = PDFLIB_STATUS_PAGE_STARTED;
   }
 
-  function OutputDriverPdflib($version) {
-    $this->OutputDriverGenericPDF();
+  function __construct($version) {
+    parent::__construct();
     $this->set_pdf_version($version);
 
     $this->_currentfont = null;
@@ -316,7 +316,7 @@ class OutputDriverPdflib extends OutputDriverGenericPDF {
 
       if (!$result) {
         readfile(HTML2PS_DIR.'templates/missing_pdflib.html');
-        error_log("No PDFLIB extension found");
+        log_error("No PDFLIB extension found");
         die("HTML2PS Error");
       }
     }
@@ -438,7 +438,7 @@ class OutputDriverPdflib extends OutputDriverGenericPDF {
     };
 
     $output = fopen($filename, 'w');
-    $manager_encoding =& ManagerEncoding::get();
+    $manager_encoding = ManagerEncoding::get();
     $vector = $manager_encoding->get_encoding_vector($encoding);
 
     foreach ($vector as $code => $utf) {

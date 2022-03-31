@@ -19,7 +19,7 @@ class OpenTypeFile {
   var $_filehandle;
   var $_sfnt;
 
-  function OpenTypeFile() {
+  function __construct() {
     $this->_filehandle = null;
     $this->_sfnt = new OpenTypeFileSFNT();
   }
@@ -43,12 +43,12 @@ class OpenTypeFile {
   }
 
   function &getTable($tag) {
-    $table =& $this->_sfnt->_getTable($tag, $this->_filehandle, $this);   
+    $table = $this->_sfnt->_getTable($tag, $this->_filehandle, $this);
     return $table;
   }
 
   function &_getCMAPSubtable($offset) {
-    $table =& $this->_sfnt->_getCMAPSubtable($offset, $this->_filehandle, $this);
+    $table = $this->_sfnt->_getCMAPSubtable($offset, $this->_filehandle, $this);
     return $table;
   }
 
@@ -76,7 +76,7 @@ class OpenTypeFileSFNT {
     $this->_tables = array();
   }
 
-  function OpenTypeFileSFNT() {
+  function __construct() {
     $this->_offsetTable = new OpenTypeFileOffsetTable();
     $this->_tableDirectory = array();
   }
@@ -137,7 +137,7 @@ class OpenTypeFileSFNT {
        */
       fseek($filehandle, $old_pos, SEEK_SET);
 
-      $this->_tables[$tag] =& $table;
+      $this->_tables[$tag] = $table;
     };
 
     return $this->_tables[$tag];
@@ -199,7 +199,7 @@ class OpenTypeFileOffsetTable {
   var $_entrySelector;
   var $_rangeShift;
 
-  function OpenTypeFileOffsetTable() {
+  function __construct() {
     $this->_numTables     = 0;
     $this->_searchRange   = 0;
     $this->_entrySelector = 0;
@@ -248,7 +248,7 @@ class OpenTypeFileTableDirectory {
   var $_offset;
   var $_length;
 
-  function OpenTypeFileTableDirectory() {
+  function __construct() {
     $this->_tag      = null;
     $this->_checkSum = 0;
     $this->_offset   = 0;
@@ -275,12 +275,12 @@ class OpenTypeFileTable {
   function _delete() {
   }
 
-  function OpenTypeFileTable() {
+  function __construct() {
     $this->_fontFile = null;
   }
 
   function setFontFile(&$fontFile) {
-    $this->_fontFile =& $fontFile;
+    $this->_fontFile = $fontFile;
   }
 
   function &getFontFile() {
@@ -315,8 +315,8 @@ class OpenTypeFilePOST extends OpenTypeFileTable {
   var $_minMemType1;
   var $_maxMemType1;
 
-  function OpenTypeFilePOST() {
-    $this->OpenTypeFileTable();
+  function __construct() {
+    parent::__construct();
   }
 
   function _read($filehandle) {
@@ -340,8 +340,8 @@ class OpenTypeFileNAME extends OpenTypeFileTable {
   var $_stringOffset;
   var $_nameRecord;
 
-  function OpenTypeFileNAME() {
-    $this->OpenTypeFileTable();
+  function __construct() {
+    parent::__construct();
     $this->_nameRecord = array();
   }
 
@@ -356,11 +356,11 @@ class OpenTypeFileNAME extends OpenTypeFileTable {
     $baseOffset = ftell($filehandle) + OpenTypeFileNAMERecord::sizeof()*$this->_count;
 
     for ($i=0; $i<$this->_count; $i++) {
-      $record =& new OpenTypeFileNAMERecord();
+      $record = new OpenTypeFileNAMERecord();
       $record->setBaseOffset($baseOffset);
       $record->setFontFile($this->getFontFile());
       $record->_read($filehandle);
-      $this->_nameRecord[] =& $record;
+      $this->_nameRecord[] = $record;
     };
   }
 
@@ -396,12 +396,12 @@ class OpenTypeFileNAMERecord extends OpenTypeFileTable {
   var $_content;
   var $_baseOffset;
 
-  function OpenTypeFileNAMERecord() {
-    $this->OpenTypeFileTable();
+  function __construct() {
+    parent::__construct();
     $this->_content = null;
   }
 
-  function sizeof() {
+  static function sizeof() {
     return 6*2;
   }
 
@@ -423,7 +423,7 @@ class OpenTypeFileNAMERecord extends OpenTypeFileTable {
 
   function getName() {
     if (is_null($this->_content)) {
-      $file =& $this->getFontFile();
+      $file = $this->getFontFile();
       $filehandle = $file->getFileHandle();
       $old_offset = ftell($filehandle);
 
@@ -515,8 +515,8 @@ class OpenTypeFileHEAD extends OpenTypeFileTable {
   var $_indexToLocFormat;
   var $_glyphDataFormat;
 
-  function OpenTypeFileHEAD() {
-    $this->OpenTypeFileTable();
+  function __construct() {
+    parent::__construct();
   }
 
   function _read($filehandle) {
@@ -548,8 +548,8 @@ class OpenTypeFileCMAP extends OpenTypeFileTable {
   var $_encodings;
   var $_subtables;
 
-  function OpenTypeFileCMAP() {
-    $this->OpenTypeFileTable();
+  function __construct() {
+    parent::__construct();
     $this->_header = new OpenTypeFileCMAPHeader();
     $this->_encodings = array();
     $this->_subtables = array();
@@ -561,7 +561,7 @@ class OpenTypeFileCMAP extends OpenTypeFileTable {
     for ($i=0; $i<$this->_header->_numTables; $i++) {
       $encoding = new OpenTypeFileCMAPEncoding();
       $encoding->_read($filehandle);
-      $this->_encodings[] =& $encoding;
+      $this->_encodings[] = $encoding;
     };
   }
 
@@ -594,9 +594,9 @@ class OpenTypeFileCMAP extends OpenTypeFileTable {
 
   function &getSubtable($index) {
     if (!isset($this->_subtables[$index])) {
-      $file =& $this->getFontFile(); 
-      $subtable =& $file->_getCMAPSubtable($this->_encodings[$index]->_offset);
-      $this->_subtables[$index] =& $subtable;
+      $file = $this->getFontFile();
+      $subtable = $file->_getCMAPSubtable($this->_encodings[$index]->_offset);
+      $this->_subtables[$index] = $subtable;
       return $subtable;
     } else {
       return $this->_subtables[$index];
@@ -611,7 +611,7 @@ class OpenTypeFileCMAPSubtable {
   var $_format;
   var $_content;
 
-  function OpenTypeFileCMAPSubtable() {
+  function __construct() {
     $this->_content = null;
   }
 
@@ -650,7 +650,8 @@ class OpenTypeFileCMAPSubtable4 extends OpenTypeFileTable {
   var $_idRangeOffset;
   var $_glyphIdArray;
 
-  function OpenTypeFileCMAPSubtable4() {
+  function __construct() {
+    parent::__construct();
     $this->_endCount      = array();
     $this->_startCount    = array();
     $this->_idDelta       = array();
@@ -797,8 +798,8 @@ class OpenTypeFileCMAPHeader {
 class OpenTypeFileMAXP extends OpenTypeFileTable {
   var $_numGlyphs;
 
-  function OpenTypeFileMAXP() {
-    $this->OpenTypeFileTable();
+  function __construct() {
+    parent::__construct();
   }
 
   function _read($filehandle) {
@@ -825,8 +826,8 @@ class OpenTypeFileHHEA extends OpenTypeFileTable {
   var $_metricDataFormat;
   var $_numberOfHMetrics;
 
-  function OpenTypeFileHHEA() {
-    $this->OpenTypeFileTable();
+  function __construct() {
+    parent::__construct();
   }
 
   function _read($filehandle) {
@@ -861,17 +862,17 @@ class OpenTypeFileHMTX extends OpenTypeFileTable {
     unset($this->_leftSideBearing);
   }
 
-  function OpenTypeFileHMTX() {
-    $this->OpenTypeFileTable();
+  function __construct() {
+    parent::__construct();
 
     $this->_hMetrics        = array();
     $this->_leftSideBearing = array();
   }
 
   function _read($filehandle) {
-    $fontFile =& $this->getFontFile();
-    $hhea =& $fontFile->getTable('hhea');
-    $maxp =& $fontFile->getTable('maxp');
+    $fontFile = $this->getFontFile();
+    $hhea = $fontFile->getTable('hhea');
+    $maxp = $fontFile->getTable('maxp');
 
     for ($i=0; $i<$hhea->_numberOfHMetrics; $i++) {
       $content = fread($filehandle, 2*2);

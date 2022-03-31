@@ -7,11 +7,11 @@ class ValueFont {
   var $family;
   var $line_height;
 
-  function ValueFont() {
+  function __construct() {
   }
 
   function &copy() {
-    $font =& new ValueFont;
+    $font = new ValueFont;
     $font->style  = $this->style;
     $font->weight = $this->weight;
 

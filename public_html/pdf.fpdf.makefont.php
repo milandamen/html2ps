@@ -14,13 +14,13 @@ function ReadTTF($fontfile, $map) {
   $font = new OpenTypeFile();
   $font->open($fontfile);
   
-  $head =& $font->getTable('head');
-  $name =& $font->getTable('name');
-  $cmap =& $font->getTable('cmap');
-  $hmtx =& $font->getTable('hmtx');
-  $hhea =& $font->getTable('hhea');
-  $post =& $font->getTable('post');
-  $subtable =& $cmap->findSubtable(OT_CMAP_PLATFORM_WINDOWS,
+  $head = $font->getTable('head');
+  $name = $font->getTable('name');
+  $cmap = $font->getTable('cmap');
+  $hmtx = $font->getTable('hmtx');
+  $hhea = $font->getTable('hhea');
+  $post = $font->getTable('post');
+  $subtable = $cmap->findSubtable(OT_CMAP_PLATFORM_WINDOWS,
                                    OT_CMAP_PLATFORM_WINDOWS_UNICODE);  
   
   /**
@@ -70,7 +70,7 @@ function ReadTTF($fontfile, $map) {
                                 OT_NAME_ID_POSTSCRIPT_NAME);
   $ps_name_ascii = "";
   for ($i=0; $i<strlen($ps_name_ucs2); $i+=2) {
-    $ps_name_ascii .= $ps_name_ucs2{$i+1};
+    $ps_name_ascii .= $ps_name_ucs2[$i+1];
   };
 
   $font_info['FontName']           = $ps_name_ascii;
@@ -170,7 +170,7 @@ function ReadAFM($file, $map) {
   // Order widths according to map
   for ($i=0; $i<=255; $i++) {
     if(!isset($widths[$map[chr($i)]])) {
-      error_log('<B>Warning:</B> character '.$map[chr($i)].' is missing<BR>');
+      log_warning('<B>Warning:</B> character '.$map[chr($i)].' is missing<BR>');
       $widths[$i]=$widths['.notdef'];
     } else {
       $widths[$i]=$widths[$map[chr($i)]];
@@ -236,7 +236,7 @@ function MakeFontDescriptor($fm,$symbolic) {
   //StemV
   if (isset($fm['StdVW'])) {
     $stemv=$fm['StdVW'];
-  } elseif(isset($fm['Weight']) and eregi('(bold|black)',$fm['Weight'])) {
+  } elseif(isset($fm['Weight']) and preg_match('/(bold|black)/i',$fm['Weight'])) {
     $stemv=120;
   } else {
     $stemv=70;
@@ -377,15 +377,14 @@ function CheckTTF($file)
 }
 
 /*******************************************************************************
- * $fontfile : chemin du fichier TTF (ou chaîne vide si pas d'incorporation)    *
+ * $fontfile : chemin du fichier TTF (ou chaï¿½ne vide si pas d'incorporation)    *
  * $afmfile :  chemin du fichier AFM                                            *
- * $enc :      encodage (ou chaîne vide si la police est symbolique)            *
+ * $enc :      encodage (ou chaï¿½ne vide si la police est symbolique)            *
  * $patch :    patch optionnel pour l'encodage                                  *
  * $type :     type de la police si $fontfile est vide                          *
  *******************************************************************************/
 function MakeFont($fontfile, $afmfile, $destdir, $destfile, $enc) {
   // Generate a font definition file
-  set_magic_quotes_runtime(0);
   ini_set('auto_detect_line_endings','1');
 
   $manager = ManagerEncoding::get();
@@ -394,7 +393,7 @@ function MakeFont($fontfile, $afmfile, $destdir, $destfile, $enc) {
   $fm = ReadAFM($afmfile, $map);
 
   if (is_null($fm)) {
-    error_log(sprintf("Notice: Missing AFM file '%s'; attempting to parse font file '%s' directly",
+    log_warning(sprintf("Notice: Missing AFM file '%s'; attempting to parse font file '%s' directly",
                       $afmfile,
                       $fontfile));
     
@@ -465,7 +464,7 @@ function MakeFont($fontfile, $afmfile, $destdir, $destfile, $enc) {
     fclose($f);
     if ($type=='Type1') {
       //Find first two sections and discard third one
-      $header=(ord($file{0})==128);
+      $header=(ord($file[0])==128);
       if ($header) {
         //Strip first binary header
         $file=substr($file,6);
@@ -475,7 +474,7 @@ function MakeFont($fontfile, $afmfile, $destdir, $destfile, $enc) {
         die('<B>Error:</B> font file does not seem to be valid Type1');
       };
       $size1=$pos+6;
-      if($header and ord($file{$size1})==128) {
+      if($header and ord($file[$size1])==128) {
         //Strip second binary header
         $file=substr($file,0,$size1).substr($file,$size1+6);
       }
@@ -499,7 +498,7 @@ function MakeFont($fontfile, $afmfile, $destdir, $destfile, $enc) {
       SaveToFile($destdir.$cmp, $file, 'b');
 
       $s.='$file=\''.basename($fontfile)."';\n";
-      error_log('Notice: font file could not be compressed (zlib extension not available)');
+      log_error('Notice: font file could not be compressed (zlib extension not available)');
     }
     
     if ($type=='Type1') {

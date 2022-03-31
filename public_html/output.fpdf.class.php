@@ -11,8 +11,8 @@ class OutputDriverFPDF extends OutputDriverGenericPDF {
   var $cx;
   var $cy;
 
-  function OutputDriverFPDF() {
-    $this->OutputDriverGenericPDF();   
+  function __construct() {
+    parent::__construct();
   }
 
   function add_link($x, $y, $w, $h, $target) {
@@ -328,7 +328,7 @@ class OutputDriverFPDF extends OutputDriverGenericPDF {
   function reset(&$media) {
     parent::reset($media);   
 
-    $this->pdf =& new FPDF('P','pt',array(mm2pt($media->width()), mm2pt($media->height())));
+    $this->pdf = new FPDF('P','pt',array(mm2pt($media->width()), mm2pt($media->height())));
 
     if (defined('DEBUG_MODE')) {
       $this->pdf->SetCompression(false);

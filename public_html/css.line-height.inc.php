@@ -10,13 +10,13 @@ require_once(HTML2PS_DIR.'value.line-height.class.php');
 class CSSLineHeight extends CSSSubFieldProperty {
   var $_defaultValue;
 
-  function CSSLineHeight(&$owner, $field) {
-    $this->CSSSubFieldProperty($owner, $field);
+  function __construct(&$owner, $field) {
+    parent::__construct($owner, $field);
 
     $this->_defaultValue = new LineHeight_Relative(1.1);
   }
 
-  function default_value() {
+  function default_value_m() {
     return $this->_defaultValue;
   }
 
@@ -44,7 +44,7 @@ class CSSLineHeight extends CSSSubFieldProperty {
     // The value has the same meaning as <number>. We recommend a used value for 'normal' between 1.0 to 1.2. 
     // The computed value is 'normal'.
     if (trim($value) === "normal") { 
-      return $this->default_value();
+      return $this->default_value_m();
     };
   
     // <length>

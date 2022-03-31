@@ -20,7 +20,7 @@ class CSSRule {
     $this->body->add_property($property);
   }
 
-  function CSSRule($rule, &$pipeline) {
+  function __construct($rule, &$pipeline) {
     $this->selector = $rule[0];
     $this->body     = $rule[1]->copy();
     $this->baseurl  = $rule[2];

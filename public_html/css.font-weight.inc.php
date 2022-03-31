@@ -1,11 +1,11 @@
 <?php
 
 class CSSFontWeight extends CSSSubFieldProperty {
-  function default_value() {
+  static function default_value() {
     return WEIGHT_NORMAL;
   }
 
-  function parse($value) {
+  static function parse($value) {
     switch (trim(strtolower($value))) {
     case 'inherit':
       return CSS_PROPERTY_INHERIT;

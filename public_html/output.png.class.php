@@ -14,7 +14,7 @@ class AffineTransform {
   var $_x_scale;
   var $_y_scale;
 
-  function AffineTransform($y_offset, $x_scale, $y_scale) {
+  function __construct($y_offset, $x_scale, $y_scale) {
     $this->_y_offset = $y_offset;
     $this->_x_scale = $x_scale;
     $this->_y_scale = $y_scale;
@@ -184,8 +184,8 @@ class OutputDriverPNG extends OutputDriverGeneric {
     return ceil($y * $scale);
   }
 
-  function OutputDriverPNG() {
-    $this->OutputDriverGeneric();
+  function __construct() {
+    parent::__construct();
 
     $this->_color    = array();
     $this->_font     = array();
@@ -201,7 +201,7 @@ class OutputDriverPNG extends OutputDriverGeneric {
     $this->update_media($media);
   }
 
-  function update_media($media) {
+  function update_media(&$media) {
     parent::update_media($media);
 
     /**
@@ -311,7 +311,7 @@ class OutputDriverPNG extends OutputDriverGeneric {
   function field_pushbuttonimage($x, $y, $w, $h, $field_name, $value, $actionURL) { /* N/A */ }
   function field_pushbuttonreset($x, $y, $w, $h) { /* N/A */ }
   function field_pushbuttonsubmit($x, $y, $w, $h, $field_name, $value, $actionURL) { /* N/A */ }
-  function field_checkbox($x, $y, $w, $h, $name, $value) { /* N/A */ }
+  function field_checkbox($x, $y, $w, $h, $name, $value, $checked) { /* N/A */ }
   function field_radio($x, $y, $w, $h, $groupname, $value, $checked) { /* N/A */ }
   function field_select($x, $y, $w, $h, $name, $value, $options) { /* N/A */ }
 
@@ -453,7 +453,7 @@ class OutputDriverPNG extends OutputDriverGeneric {
   }
 
   function new_form($name) { /* N/A */ }
-  function next_page() { /* N/A */ }
+  function next_page($old_page_height) { /* N/A */ }
   function release() { }
 
   /**

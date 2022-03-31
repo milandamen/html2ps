@@ -15,7 +15,7 @@ class FormBox extends BlockBox {
     return parent::show($driver);
   }
 
-  function &create(&$root, &$pipeline) {
+  static function create(&$root, &$pipeline) {
     if ($root->has_attribute('name')) {
       $name = $root->get_attribute('name');
     } elseif ($root->has_attribute('id')) {
@@ -30,8 +30,8 @@ class FormBox extends BlockBox {
     return $box;
   }
 
-  function FormBox($name) {
-    $this->BlockBox();
+  function __construct($name) {
+    parent::__construct();
 
     $this->_name = $name;
   }

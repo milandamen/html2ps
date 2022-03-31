@@ -1,11 +1,11 @@
 <?php
 
 class CSSFontFamily extends CSSSubFieldProperty {
-  function default_value() {
+  static function default_value() {
     return 'times';
   }
 
-  function parse($value) {
+  static function parse($value) {
     if ($value == 'inherit') {
       return CSS_PROPERTY_INHERIT;
     }
@@ -19,9 +19,9 @@ class CSSFontFamily extends CSSSubFieldProperty {
       if ($subvalue !== "") {
 
         // Some multi-word font family names can be enclosed in quotes; remove them
-        if ($subvalue{0} == "'") {
+        if ($subvalue[0] == "'") {
           $subvalue = substr($subvalue,1,strlen($subvalue)-2);
-        } elseif ($subvalue{0} == '"') {
+        } elseif ($subvalue[0] == '"') {
           $subvalue = substr($subvalue,1,strlen($subvalue)-2);
         };
       

@@ -36,18 +36,18 @@ function detect_font_value_type($value) {
 class CSSFont extends CSSPropertyHandler {
   var $_defaultValue;
 
-  function CSSFont() {
-    $this->CSSPropertyHandler(true, true);
+  function __construct() {
+    parent::__construct(true, true);
 
     $this->_defaultValue = null;
   }
 
-  function default_value() {
+  function default_value_m() {
     if (is_null($this->_defaultValue)) {
       $this->_defaultValue = new ValueFont;
 
       $size_handler = CSS::get_handler(CSS_FONT_SIZE);
-      $default_size = $size_handler->default_value();
+      $default_size = $size_handler->default_value_m();
       
       $this->_defaultValue->size   = $default_size->copy();
       $this->_defaultValue->weight = CSSFontWeight::default_value();
@@ -144,7 +144,7 @@ class CSSFont extends CSSPropertyHandler {
         $size_subvalues = explode('/', $subvalue);
         $font->size = CSSFontSize::parse($size_subvalues[0]);
         if (isset($size_subvalues[1])) {
-          $handler =& CSS::get_handler(CSS_LINE_HEIGHT);
+          $handler = CSS::get_handler(CSS_LINE_HEIGHT);
           $font->line_height = $handler->parse($size_subvalues[1]);
         };
         break;

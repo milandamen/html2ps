@@ -33,7 +33,7 @@ function _fix_tag_display($default_display, &$state, &$pipeline) {
   // Here we will use the $default_display stored above
   // Note that "display: none" should _never_ be changed
   //
-  $handler =& CSS::get_handler(CSS_DISPLAY);
+  $handler = CSS::get_handler(CSS_DISPLAY);
   if ($handler->get($state->getState()) === "none") {
     return;
   };
@@ -46,7 +46,7 @@ function _fix_tag_display($default_display, &$state, &$pipeline) {
     
   case '-button':
     // INPUT buttons will always have 'display: -button' (in latter case if display = 'block', we'll use a wrapper box)
-    $css_state =& $pipeline->get_current_css_state();
+    $css_state = $pipeline->get_current_css_state();
     if ($handler->get($css_state->getState()) === 'block') {
       $need_block_wrapper = true;
     };
@@ -56,7 +56,7 @@ function _fix_tag_display($default_display, &$state, &$pipeline) {
 }
 
 function is_percentage($value) { 
-  return $value{strlen($value)-1} == "%"; 
+  return $value[strlen($value)-1] == "%";
 }
 
 /**
@@ -133,7 +133,7 @@ function css_process_escapes_callback($matches) {
 function css_remove_value_quotes($value) {
   if (strlen($value) == 0) { return $value; };
 
-  if ($value{0} === "'" || $value{0} === "\"") {
+  if ($value[0] === "'" || $value[0] === "\"") {
     $value = substr($value, 1, strlen($value)-2);
   };
   return $value;

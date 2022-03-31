@@ -2,8 +2,8 @@
 // $Header: /cvsroot/html2ps/css.border.bottom.width.inc.php,v 1.2 2007/02/04 17:08:18 Konstantin Exp $
 
 class CSSBorderBottomWidth extends CSSSubProperty {
-  function CSSBorderBottomWidth(&$owner) {
-    $this->CSSSubProperty($owner);
+  function __construct(&$owner) {
+    parent::__construct($owner);
   }
 
   function set_value(&$owner_value, &$value) {

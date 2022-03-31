@@ -3,8 +3,8 @@
 require_once(HTML2PS_DIR.'inline.content.builder.php');
 
 class InlineContentBuilderPreLine extends InlineContentBuilder {
-  function InlineContentBuilderPreLine() {
-    $this->InlineContentBuilder();
+  function __construct() {
+    parent::__construct();
   }
 
   /**
@@ -16,7 +16,7 @@ class InlineContentBuilderPreLine extends InlineContentBuilder {
     $text = $this->remove_leading_linefeeds($text);
     $text = $this->remove_trailing_linefeeds($text);
     $lines = $this->break_into_lines($text);
-    $parent =& $box->get_parent_node();
+    $parent = $box->get_parent_node();
 
     for ($i=0, $size = count($lines); $i<$size; $i++) {
       $line = $lines[$i];
@@ -25,7 +25,7 @@ class InlineContentBuilderPreLine extends InlineContentBuilder {
       foreach ($words as $word) {
         $box->process_word($word, $pipeline);
 
-        $whitespace =& WhitespaceBox::create($pipeline);
+        $whitespace = WhitespaceBox::createWithPipeline($pipeline);
         $box->add_child($whitespace);
       };
 
